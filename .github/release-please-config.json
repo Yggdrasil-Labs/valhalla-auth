@@ -1,0 +1,57 @@
+{
+  "bootstrap-sha": "3c0f4de5c0f327555ea504123638c8986fdc274c",
+  "packages": {
+    ".": {
+      "release-type": "simple",
+      "package-name": "midgard-backend-template",
+      "changelog-path": "CHANGELOG.md",
+      "include-v-in-tag": true,
+      "extra-files": [
+        {
+          "type": "xml",
+          "path": "pom.xml",
+          "xpath": "/project/properties/revision"
+        }
+      ],
+      "changelog-sections": [
+        {
+          "type": "feat",
+          "section": "Features"
+        },
+        {
+          "type": "fix",
+          "section": "Bug Fixes"
+        },
+        {
+          "type": "docs",
+          "section": "Documentation"
+        },
+        {
+          "type": "refactor",
+          "section": "Code Refactoring"
+        },
+        {
+          "type": "perf",
+          "section": "Performance Improvements"
+        },
+        {
+          "type": "test",
+          "section": "Tests"
+        },
+        {
+          "type": "build",
+          "section": "Build System"
+        },
+        {
+          "type": "ci",
+          "section": "Continuous Integration"
+        },
+        {
+          "type": "chore",
+          "section": "Miscellaneous Chores"
+        }
+      ]
+    }
+  },
+  "$schema": "https://raw.githubusercontent.com/googleapis/release-please/main/schemas/config.json"
+}

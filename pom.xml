@@ -1,0 +1,251 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
+    <modelVersion>4.0.0</modelVersion>
+
+    <parent>
+        <groupId>com.yggdrasil.labs</groupId>
+        <artifactId>mimir-boot-parent</artifactId>
+        <version>1.2.1</version>
+        <relativePath/>
+    </parent>
+
+    <artifactId>midgard-backend-template</artifactId>
+    <version>${revision}</version>
+    <packaging>pom</packaging>
+    <name>midgard-backend-template</name>
+
+    <properties>
+        <!-- 📌 版本号统一管理：只修改这里即可，所有子模块自动继承 -->
+        <!-- 开发阶段使用 SNAPSHOT 版本 -->
+        <revision>1.0.0-SNAPSHOT</revision>
+
+        <java.version>17</java.version>
+        <maven.compiler.source>17</maven.compiler.source>
+        <maven.compiler.target>17</maven.compiler.target>
+        <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+        <project.reporting.outputEncoding>UTF-8</project.reporting.outputEncoding>
+        <maven.deploy.skip>true</maven.deploy.skip>
+
+        <mimir-boot.version>1.2.1</mimir-boot.version>
+        <cola.components.version>5.0.0</cola.components.version>
+    </properties>
+
+    <modules>
+        <module>client</module>
+        <module>adapter</module>
+        <module>app</module>
+        <module>domain</module>
+        <module>infrastructure</module>
+        <module>start</module>
+    </modules>
+
+    <dependencies>
+        <dependency>
+            <groupId>org.projectlombok</groupId>
+            <artifactId>lombok</artifactId>
+            <scope>provided</scope>
+        </dependency>
+        <dependency>
+            <groupId>junit</groupId>
+            <artifactId>junit</artifactId>
+            <scope>test</scope>
+        </dependency>
+    </dependencies>
+
+    <repositories>
+        <!-- Maven 中央仓库 -->
+        <repository>
+            <id>central</id>
+            <name>Maven Central Repository</name>
+            <url>https://repo.maven.apache.org/maven2</url>
+            <releases>
+                <enabled>true</enabled>
+            </releases>
+            <snapshots>
+                <enabled>false</enabled>
+            </snapshots>
+        </repository>
+        <!-- GitHub Packages 仓库（用于 mimir-boot 相关依赖）
+             注意：如果 mimir-boot-parent 在不同的仓库中，请根据实际情况修改 URL
+             格式：https://maven.pkg.github.com/OWNER/REPO -->
+        <repository>
+            <id>github</id>
+            <name>GitHub Packages</name>
+            <url>https://maven.pkg.github.com/Yggdrasil-Labs/mimir-boot</url>
+            <releases>
+                <enabled>true</enabled>
+            </releases>
+            <snapshots>
+                <enabled>true</enabled>
+            </snapshots>
+        </repository>
+    </repositories>
+
+    <dependencyManagement>
+        <dependencies>
+            <!--Project modules-->
+            <dependency>
+                <groupId>com.yggdrasil.labs</groupId>
+                <artifactId>adapter</artifactId>
+                <version>${revision}</version>
+            </dependency>
+            <dependency>
+                <groupId>com.yggdrasil.labs</groupId>
+                <artifactId>client</artifactId>
+                <version>${revision}</version>
+            </dependency>
+            <dependency>
+                <groupId>com.yggdrasil.labs</groupId>
+                <artifactId>app</artifactId>
+                <version>${revision}</version>
+            </dependency>
+            <dependency>
+                <groupId>com.yggdrasil.labs</groupId>
+                <artifactId>domain</artifactId>
+                <version>${revision}</version>
+            </dependency>
+            <dependency>
+                <groupId>com.yggdrasil.labs</groupId>
+                <artifactId>infrastructure</artifactId>
+                <version>${revision}</version>
+            </dependency>
+            <!--Project modules End-->
+
+            <dependency>
+                <groupId>com.yggdrasil.labs</groupId>
+                <artifactId>mimir-boot-bom</artifactId>
+                <version>${mimir-boot.version}</version>
+                <type>pom</type>
+                <scope>import</scope>
+            </dependency>
+
+            <dependency>
+                <groupId>com.alibaba.cola</groupId>
+                <artifactId>cola-components-bom</artifactId>
+                <version>${cola.components.version}</version>
+                <type>pom</type>
+                <scope>import</scope>
+            </dependency>
+
+            <!--Validation API-->
+            <dependency>
+                <groupId>jakarta.validation</groupId>
+                <artifactId>jakarta.validation-api</artifactId>
+                <version>3.1.1</version>
+            </dependency>
+            <!--Validation API End -->
+
+
+        </dependencies>
+    </dependencyManagement>
+
+    <build>
+        <plugins>
+            <!-- Spotless 代码格式化 - 使用阿里巴巴 Java 开发规范 -->
+            <plugin>
+                <groupId>com.diffplug.spotless</groupId>
+                <artifactId>spotless-maven-plugin</artifactId>
+                <version>3.1.0</version>
+                <configuration>
+                    <java>
+                        <!-- 包含的文件 -->
+                        <includes>
+                            <include>src/main/java/**/*.java</include>
+                            <include>src/test/java/**/*.java</include>
+                        </includes>
+                        
+                        <!-- 排除生成的代码 -->
+                        <excludes>
+                            <exclude>**/target/**/*.java</exclude>
+                            <exclude>**/generated/**/*.java</exclude>
+                            <exclude>**/generated-sources/**/*.java</exclude>
+                        </excludes>
+                        
+                        <!-- 使用 Google AOSP 风格（完全符合阿里规范核心要求）
+                             AOSP = Android Open Source Project
+                             - 4 空格缩进（阿里规范）
+                             - K&R 括号风格（阿里规范）
+                             - 工具稳定、CI 友好
+                        -->
+                        <googleJavaFormat>
+                            <version>1.23.0</version>
+                            <style>AOSP</style>
+                            <reflowLongStrings>true</reflowLongStrings>
+                        </googleJavaFormat>
+                        
+                        <!-- 导入顺序：标准 Java 顺序 -->
+                        <importOrder>
+                            <order>java,javax,jakarta,org,com,cn,</order>
+                        </importOrder>
+                        
+                        <!-- 删除未使用的导入 -->
+                        <removeUnusedImports/>
+                        
+                        <!-- 去除行尾空白 -->
+                        <trimTrailingWhitespace/>
+                        
+                        <!-- 文件末尾保留一个空行 -->
+                        <endWithNewline/>
+                    </java>
+                </configuration>
+                <executions>
+                    <!-- 在 compile 阶段自动格式化代码（仅 dev profile） -->
+                    <execution>
+                        <id>spotless-apply</id>
+                        <phase>compile</phase>
+                        <goals>
+                            <goal>apply</goal>
+                        </goals>
+                        <configuration>
+                            <skip>false</skip>
+                        </configuration>
+                    </execution>
+                    <!-- 在 validate 阶段执行格式检查（CI 环境） -->
+                    <execution>
+                        <id>spotless-check</id>
+                        <phase>validate</phase>
+                        <goals>
+                            <goal>check</goal>
+                        </goals>
+                    </execution>
+                </executions>
+            </plugin>
+            
+            <!-- Flatten Plugin (版本管理) - 复用 mimir-boot-parent 中的配置 -->
+            <plugin>
+                <groupId>org.codehaus.mojo</groupId>
+                <artifactId>flatten-maven-plugin</artifactId>
+            </plugin>
+        </plugins>
+    </build>
+
+    <!-- Profiles 从 mimir-boot-parent 继承 -->
+    <!-- 显式声明以便 IDEA 识别和显示 -->
+    <profiles>
+        <!-- dev profile (默认激活) - 开发环境，快速构建，不检查覆盖率 -->
+        <profile>
+            <id>dev</id>
+        </profile>
+
+        <!-- precheck profile - 提交前检查：单测与覆盖率 -->
+        <profile>
+            <id>precheck</id>
+        </profile>
+
+        <!-- ci profile - CI 流水线严格门禁：格式、覆盖率、lint -->
+        <profile>
+            <id>ci</id>
+            <properties>
+                <!-- CI 环境跳过所有测试 -->
+                <skipTests>true</skipTests>
+                <maven.test.skip>true</maven.test.skip>
+            </properties>
+        </profile>
+
+        <!-- prod profile - 生产发布：打包、上传仓库 -->
+        <profile>
+            <id>prod</id>
+        </profile>
+    </profiles>
+</project>

@@ -1,0 +1,15 @@
+spring:
+  datasource:
+    driver-class-name: com.mysql.cj.jdbc.Driver
+    url: jdbc:mysql://8.xxx.xxx.8:3306/midgard
+    username: xxx
+    password: xxx
+
+logging:
+  level:
+    com.yggdrasil.labs.*: debug
+    root: info
+
+# 开发环境特定配置
+# 例如：数据库连接、Redis 等
+

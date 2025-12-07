@@ -1,0 +1,61 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
+    <modelVersion>4.0.0</modelVersion>
+    <parent>
+        <groupId>com.yggdrasil.labs</groupId>
+        <artifactId>midgard-backend-template</artifactId>
+        <version>${revision}</version>
+        <relativePath>../pom.xml</relativePath>
+    </parent>
+
+    <artifactId>app</artifactId>
+    <packaging>jar</packaging>
+    <name>app</name>
+
+    <dependencies>
+        <!-- 应用层依赖对外契约（client）和领域层（domain），不直接依赖基础设施实现 -->
+        <dependency>
+            <groupId>com.yggdrasil.labs</groupId>
+            <artifactId>client</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>com.yggdrasil.labs</groupId>
+            <artifactId>domain</artifactId>
+        </dependency>
+
+        <!-- DTO/DO 转换 -->
+        <dependency>
+            <groupId>org.mapstruct</groupId>
+            <artifactId>mapstruct</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>org.mapstruct</groupId>
+            <artifactId>mapstruct-processor</artifactId>
+            <scope>provided</scope>
+        </dependency>
+        <dependency>
+            <groupId>org.projectlombok</groupId>
+            <artifactId>lombok-mapstruct-binding</artifactId>
+            <version>0.2.0</version>
+            <scope>provided</scope>
+        </dependency>
+
+        <dependency>
+            <groupId>com.alibaba.cola</groupId>
+            <artifactId>cola-component-catchlog-starter</artifactId>
+        </dependency>
+        
+        <!-- Spring Transaction -->
+        <dependency>
+            <groupId>org.springframework</groupId>
+            <artifactId>spring-tx</artifactId>
+        </dependency>
+
+        <!-- JSR 303 Validation -->
+        <dependency>
+            <groupId>org.springframework.boot</groupId>
+            <artifactId>spring-boot-starter-validation</artifactId>
+        </dependency>
+        <!-- JSR 303 Validation End-->
+    </dependencies>
+</project>

@@ -1,0 +1,115 @@
+# Dependabot Configuration
+# 基于项目实际依赖配置，仅监控实际使用的依赖
+version: 2
+updates:
+  # Maven 依赖更新
+  - package-ecosystem: "maven"
+    directory: "/"
+    schedule:
+      interval: "weekly"
+      day: "saturday"
+      time: "11:00"
+    open-pull-requests-limit: 10
+    reviewers:
+      - "YoungerYang-Y"
+    assignees:
+      - "YoungerYang-Y"
+    commit-message:
+      prefix: "chore"
+      include: "scope"
+    labels:
+      - "📦 deps"
+    # 忽略主要版本更新（破坏性变更）
+    ignore:
+      # Mimir Boot 框架主要版本更新需要手动处理
+      - dependency-name: "com.yggdrasil.labs:mimir-boot-parent"
+        update-types: ["version-update:semver-major"]
+      - dependency-name: "com.yggdrasil.labs:mimir-boot-bom"
+        update-types: ["version-update:semver-major"]
+      - dependency-name: "com.yggdrasil.labs:mimir-boot-starter-*"
+        update-types: ["version-update:semver-major"]
+      # COLA 架构组件主要版本更新
+      - dependency-name: "com.alibaba.cola:cola-components-bom"
+        update-types: ["version-update:semver-major"]
+      # 数据库驱动主要版本更新
+      - dependency-name: "com.mysql:mysql-connector-j"
+        update-types: ["version-update:semver-major"]
+      # MapStruct 主要版本更新
+      - dependency-name: "org.mapstruct:*"
+        update-types: ["version-update:semver-major"]
+      # Java 版本相关更新
+      - dependency-name: "org.apache.maven.plugins:maven-compiler-plugin"
+        update-types: ["version-update:semver-major"]
+    # 允许的更新类型
+    allow:
+      - dependency-type: "direct"
+      - dependency-type: "indirect"
+    # 分组相关依赖
+    groups:
+      # Mimir Boot 框架（谨慎更新，仅允许补丁版本）
+      mimir-boot:
+        patterns:
+          - "com.yggdrasil.labs:mimir-boot-*"
+        update-types: ["patch"]
+      # COLA 架构组件（谨慎更新，仅允许补丁版本）
+      cola:
+        patterns:
+          - "com.alibaba.cola:*"
+        update-types: ["patch"]
+      # 数据库相关
+      database:
+        patterns:
+          - "com.mysql:*"
+        update-types: ["minor", "patch"]
+      # 测试框架
+      testing:
+        patterns:
+          - "junit:*"
+          - "org.junit.jupiter:*"
+          - "org.mockito:*"
+        update-types: ["minor", "patch"]
+      # 工具类
+      utilities:
+        patterns:
+          - "org.projectlombok:*"
+          - "cn.hutool:*"
+          - "com.alibaba:fastjson"
+        update-types: ["minor", "patch"]
+      # 对象映射
+      mapping:
+        patterns:
+          - "org.mapstruct:*"
+        update-types: ["minor", "patch"]
+      # Validation 相关
+      validation:
+        patterns:
+          - "javax.validation:*"
+          - "javax.el:*"
+          - "org.glassfish:jakarta.el"
+        update-types: ["minor", "patch"]
+      # Maven 插件
+      maven-plugins:
+        patterns:
+          - "org.apache.maven.plugins:*"
+          - "org.codehaus.mojo:*"
+          - "org.jacoco:jacoco-maven-plugin"
+          - "com.github.spotbugs:spotbugs-maven-plugin"
+        update-types: ["minor", "patch"]
+
+  # GitHub Actions 更新
+  - package-ecosystem: "github-actions"
+    directory: "/"
+    schedule:
+      interval: "weekly"
+      day: "monday"
+      time: "09:00"
+    open-pull-requests-limit: 5
+    reviewers:
+      - "YoungerYang-Y"
+    assignees:
+      - "YoungerYang-Y"
+    commit-message:
+      prefix: "ci"
+      include: "scope"
+    labels:
+      - "🧰 infra"
