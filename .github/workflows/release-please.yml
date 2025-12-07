@@ -80,7 +80,7 @@ jobs:
                   owner: context.repo.owner,
                   repo: context.repo.repo,
                   state: 'open',
-                  head: `${context.repo.owner}:release-please--branches--main--components--midgard-backend-template`,
+                  head: `${context.repo.owner}:release-please--branches--main--components--valhalla-auth`,
                   sort: 'created',
                   direction: 'desc',
                   per_page: 1
@@ -93,8 +93,8 @@ jobs:
                 console.log(`Found existing release PR: #${prNumber}`);
                 
                 // 从 PR 标题中提取版本号（支持多种格式）
-                // 例如: "chore(main): release midgard-backend-template 1.0.0" 或 "release 1.0.0"
-                const titleMatch = prs[0].title.match(/(?:release|版本)\s+(?:midgard-backend-template\s+)?(\d+\.\d+\.\d+)/i) ||
+                // 例如: "chore(main): release valhalla-auth 1.0.0" 或 "release 1.0.0"
+                const titleMatch = prs[0].title.match(/(?:release|版本)\s+(?:valhalla-auth\s+)?(\d+\.\d+\.\d+)/i) ||
                                   prs[0].title.match(/(\d+\.\d+\.\d+)/);
                 if (titleMatch) {
                   version = titleMatch[1];
@@ -226,7 +226,7 @@ jobs:
                 owner: context.repo.owner,
                 repo: context.repo.repo,
                 state: 'open',
-                head: `${context.repo.owner}:release-please--branches--main--components--midgard-backend-template`,
+                head: `${context.repo.owner}:release-please--branches--main--components--valhalla-auth`,
                 sort: 'created',
                 direction: 'desc',
                 per_page: 1
@@ -278,7 +278,7 @@ jobs:
                 owner: context.repo.owner,
                 repo: context.repo.repo,
                 state: 'open',
-                head: `${context.repo.owner}:release-please--branches--main--components--midgard-backend-template`,
+                head: `${context.repo.owner}:release-please--branches--main--components--valhalla-auth`,
                 sort: 'created',
                 direction: 'desc',
                 per_page: 1
