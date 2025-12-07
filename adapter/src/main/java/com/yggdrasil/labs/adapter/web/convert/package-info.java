@@ -44,6 +44,6 @@
  *   <li>保持转换逻辑简单，避免在转换器中添加业务校验
  * </ul>
  *
- * @author Midgard Team
+ * @author YoungerYang-Y
  */
 package com.yggdrasil.labs.adapter.web.convert;

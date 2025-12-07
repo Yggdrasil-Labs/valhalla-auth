@@ -3,7 +3,7 @@ package com.yggdrasil.labs.domain.customer.model;
 /**
  * SourceType
  *
- * @author Frank Zhang
+ * @author YoungerYang-Y
  * @date 2018-01-08 11:09 AM
  */
 public enum SourceType {

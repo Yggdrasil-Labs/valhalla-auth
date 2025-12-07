@@ -1,7 +1,7 @@
 /**
  * 启动层：仅包含启动类 & 框架配置
  *
- * <p>本包是 Midgard 模板项目的启动层，遵循 DDD 分层架构原则。
+ * <p>本包是 Valhalla 认证服务的启动层，遵循 DDD 分层架构原则。
  *
  * <p><b>包结构规范</b>：
  *
@@ -46,9 +46,9 @@
  *   <li>不包含任何业务逻辑代码
  * </ul>
  *
- * <p>这是 Midgard 模板项目的一部分，用于快速开始其他具体的业务项目。 Midgard（中庭）是基于 Cola5.0 DDD 架构的微服务模板项目，用于快速创建符合 DDD
- * 最佳实践的后端服务。
+ * <p>这是 Valhalla 认证服务的一部分，用于提供身份认证和授权功能。 Valhalla（瓦尔哈拉）是基于 Cola5.0 DDD 架构的认证服务，用于提供符合 DDD
+ * 最佳实践的身份认证和授权功能。
  *
- * @author Midgard Team
+ * @author YoungerYang-Y
  */
 package com.yggdrasil.labs.start;

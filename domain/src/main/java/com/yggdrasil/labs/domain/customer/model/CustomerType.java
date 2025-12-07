@@ -3,7 +3,7 @@ package com.yggdrasil.labs.domain.customer.model;
 /**
  * CustomerType
  *
- * @author Frank Zhang
+ * @author YoungerYang-Y
  * @date 2018-01-08 8:51 AM
  */
 public enum CustomerType {

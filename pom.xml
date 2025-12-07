@@ -10,15 +10,15 @@
         <relativePath/>
     </parent>
 
-    <artifactId>midgard-backend-template</artifactId>
+    <artifactId>valhalla-auth</artifactId>
     <version>${revision}</version>
     <packaging>pom</packaging>
-    <name>midgard-backend-template</name>
+    <name>valhalla-auth</name>
 
     <properties>
         <!-- 📌 版本号统一管理：只修改这里即可，所有子模块自动继承 -->
         <!-- 开发阶段使用 SNAPSHOT 版本 -->
-        <revision>1.0.0-SNAPSHOT</revision>
+        <revision>0.0.1-SNAPSHOT</revision>
 
         <java.version>17</java.version>
         <maven.compiler.source>17</maven.compiler.source>

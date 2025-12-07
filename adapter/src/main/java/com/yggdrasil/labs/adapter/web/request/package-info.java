@@ -44,6 +44,6 @@
  *   <li>不同端的 Request 对象可以有不同的字段和结构
  * </ul>
  *
- * @author Midgard Team
+ * @author YoungerYang-Y
  */
 package com.yggdrasil.labs.adapter.web.request;

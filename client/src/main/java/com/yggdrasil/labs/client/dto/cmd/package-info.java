@@ -58,6 +58,6 @@
  *   <li>Command 对象应该是不可变的或使用 Builder 模式（可选）
  * </ul>
  *
- * @author Midgard Team
+ * @author YoungerYang-Y
  */
 package com.yggdrasil.labs.client.dto.cmd;

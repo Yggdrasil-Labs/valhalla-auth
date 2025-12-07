@@ -6,7 +6,7 @@ import org.springframework.boot.autoconfigure.SpringBootApplication;
 /**
  * Spring Boot Starter
  *
- * @author Frank Zhang
+ * @author YoungerYang-Y
  */
 @SpringBootApplication(scanBasePackages = {"com.yggdrasil.labs", "com.alibaba.cola"})
 public class Application {

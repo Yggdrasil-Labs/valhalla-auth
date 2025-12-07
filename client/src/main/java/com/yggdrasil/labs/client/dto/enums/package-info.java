@@ -44,6 +44,6 @@
  *   <li>使用 Lombok 的 @Getter 简化代码
  * </ul>
  *
- * @author Midgard Team
+ * @author YoungerYang-Y
  */
 package com.yggdrasil.labs.client.dto.enums;

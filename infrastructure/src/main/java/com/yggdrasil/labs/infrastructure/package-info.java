@@ -105,6 +105,6 @@
  *   <li>Gateway 实现类命名：{External}GatewayImpl
  * </ul>
  *
- * @author Midgard Team
+ * @author YoungerYang-Y
  */
 package com.yggdrasil.labs.infrastructure;

@@ -27,6 +27,6 @@
  *   <li>考虑 WAP 端的设备特性和网络限制
  * </ul>
  *
- * @author Midgard Team
+ * @author YoungerYang-Y
  */
 package com.yggdrasil.labs.adapter.wap;

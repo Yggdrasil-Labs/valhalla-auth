@@ -55,6 +55,6 @@
  *   <li>CO 关注外部展示，VO 关注领域概念
  * </ul>
  *
- * @author Midgard Team
+ * @author YoungerYang-Y
  */
 package com.yggdrasil.labs.client.dto.co;

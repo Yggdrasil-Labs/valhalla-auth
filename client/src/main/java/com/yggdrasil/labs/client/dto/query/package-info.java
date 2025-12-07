@@ -57,6 +57,6 @@
  *   <li>查询条件字段应该是可选的，使用包装类型（如 String、Integer）
  * </ul>
  *
- * @author Midgard Team
+ * @author YoungerYang-Y
  */
 package com.yggdrasil.labs.client.dto.query;

@@ -87,6 +87,6 @@
  *   <li>不同的外部协议（Web、RPC、MQ）应分别适配
  * </ul>
  *
- * @author Midgard Team
+ * @author YoungerYang-Y
  */
 package com.yggdrasil.labs.adapter;

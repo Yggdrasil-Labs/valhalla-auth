@@ -61,6 +61,6 @@
  *   <li>使用 Lombok 简化代码（@Data、@EqualsAndHashCode）
  * </ul>
  *
- * @author Midgard Team
+ * @author YoungerYang-Y
  */
 package com.yggdrasil.labs.client;

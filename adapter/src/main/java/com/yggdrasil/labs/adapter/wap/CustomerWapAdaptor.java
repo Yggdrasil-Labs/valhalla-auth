@@ -5,7 +5,7 @@ package com.yggdrasil.labs.adapter.wap;
  *
  * <p>WAP : Wireless Application Protocol)
  *
- * @author Frank Zhang
+ * @author YoungerYang-Y
  * @date 2020-10-27 8:03 PM
  */
 public class CustomerWapAdaptor {}

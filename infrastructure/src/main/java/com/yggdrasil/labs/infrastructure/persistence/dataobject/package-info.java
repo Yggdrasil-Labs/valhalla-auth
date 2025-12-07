@@ -96,6 +96,6 @@
  *   <li>DO 类应使用 @Data 注解，避免手动编写 getter/setter
  * </ul>
  *
- * @author Midgard Team
+ * @author YoungerYang-Y
  */
 package com.yggdrasil.labs.infrastructure.persistence.dataobject;

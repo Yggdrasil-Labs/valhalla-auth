@@ -15,8 +15,8 @@
  * com.yggdrasil.labs.domain.service</code>，仓储接口应位于 <code>com.yggdrasil.labs.domain.repository
  * </code>。
  *
- * <p>这是 Midgard 模板项目的一部分，用于快速开始其他具体的业务项目。
+ * <p>这是 Valhalla 认证服务的一部分，用于提供身份认证和授权功能。
  *
- * @author Midgard Team
+ * @author YoungerYang-Y
  */
 package com.yggdrasil.labs.domain;

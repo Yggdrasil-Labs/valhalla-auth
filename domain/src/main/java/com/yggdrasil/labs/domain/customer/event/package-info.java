@@ -123,6 +123,6 @@
  *   <li>避免在事件处理中包含复杂的业务逻辑
  * </ul>
  *
- * @author Midgard Team
+ * @author YoungerYang-Y
  */
 package com.yggdrasil.labs.domain.customer.event;

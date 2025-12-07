@@ -39,6 +39,6 @@
  *   <li>遵循 COLA 5.0 的命名规范
  * </ul>
  *
- * @author Midgard Team
+ * @author YoungerYang-Y
  */
 package com.yggdrasil.labs.client.dto;

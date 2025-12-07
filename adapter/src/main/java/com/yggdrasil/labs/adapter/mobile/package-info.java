@@ -27,6 +27,6 @@
  *   <li>考虑移动端的网络环境和性能要求
  * </ul>
  *
- * @author Midgard Team
+ * @author YoungerYang-Y
  */
 package com.yggdrasil.labs.adapter.mobile;

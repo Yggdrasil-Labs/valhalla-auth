@@ -106,6 +106,6 @@
  *   <li>复杂查询可以使用 MyBatis XML 方式实现
  * </ul>
  *
- * @author Midgard Team
+ * @author YoungerYang-Y
  */
 package com.yggdrasil.labs.infrastructure.persistence.impl;

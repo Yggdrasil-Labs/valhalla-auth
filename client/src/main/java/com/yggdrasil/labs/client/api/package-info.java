@@ -47,6 +47,6 @@
  *   <li>接口变更需要谨慎，影响所有调用方和实现方
  * </ul>
  *
- * @author Midgard Team
+ * @author YoungerYang-Y
  */
 package com.yggdrasil.labs.client.api;

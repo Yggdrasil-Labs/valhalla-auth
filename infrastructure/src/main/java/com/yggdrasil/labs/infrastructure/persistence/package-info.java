@@ -101,6 +101,6 @@
  *   <li>@AutoMybatis 会在编译期生成 Mapper 和 Service
  * </ul>
  *
- * @author Midgard Team
+ * @author YoungerYang-Y
  */
 package com.yggdrasil.labs.infrastructure.persistence;
