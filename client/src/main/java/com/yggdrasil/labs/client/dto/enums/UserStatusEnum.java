@@ -55,4 +55,3 @@ public enum UserStatusEnum {
         return this == LOCKED;
     }
 }
-

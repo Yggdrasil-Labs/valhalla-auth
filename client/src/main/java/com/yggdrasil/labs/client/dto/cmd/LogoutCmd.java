@@ -29,4 +29,3 @@ public class LogoutCmd extends Command {
     /** 是否撤销所有Token（默认false，只撤销当前Token） */
     private Boolean revokeAll = false;
 }
-

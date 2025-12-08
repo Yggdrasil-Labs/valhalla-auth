@@ -26,4 +26,3 @@ public class LockUserCmd extends Command {
     /** 锁定原因（可选） */
     private String reason;
 }
-

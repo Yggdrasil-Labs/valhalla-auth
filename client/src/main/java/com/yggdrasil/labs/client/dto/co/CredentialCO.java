@@ -50,4 +50,3 @@ public class CredentialCO extends DTO {
     /** 更新时间 */
     private LocalDateTime updateTime;
 }
-

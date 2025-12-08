@@ -48,4 +48,3 @@ public enum LoginTypeEnum {
         return null;
     }
 }
-

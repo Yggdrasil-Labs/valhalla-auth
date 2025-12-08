@@ -20,4 +20,3 @@ public class VerifyTokenCmd extends Command {
     @NotBlank(message = "Token不能为空")
     private String token;
 }
-

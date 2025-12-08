@@ -22,4 +22,3 @@ public class LoginResultCO extends DTO {
     /** 用户认证信息 */
     private AuthUserCO user;
 }
-

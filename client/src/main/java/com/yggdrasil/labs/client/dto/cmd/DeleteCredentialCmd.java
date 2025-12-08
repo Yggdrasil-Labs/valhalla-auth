@@ -20,4 +20,3 @@ public class DeleteCredentialCmd extends Command {
     @NotNull(message = "凭证ID不能为空")
     private Long credentialId;
 }
-

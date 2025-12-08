@@ -23,4 +23,3 @@ public class GetTokenQuery extends Query {
     /** 用户ID（可选） */
     private Long userId;
 }
-

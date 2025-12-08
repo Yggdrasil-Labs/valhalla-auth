@@ -56,4 +56,3 @@ public enum CredentialTypeEnum {
         return this == WECHAT || this == GOOGLE || this == OTHER;
     }
 }
-

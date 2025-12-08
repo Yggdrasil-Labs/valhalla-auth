@@ -41,4 +41,3 @@ public class TokenCO extends DTO {
     /** 设备类型 */
     private String deviceType;
 }
-

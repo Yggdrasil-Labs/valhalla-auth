@@ -134,4 +134,3 @@ public interface AuthClient {
      */
     SingleResponse<TokenCO> getToken(GetTokenQuery query);
 }
-

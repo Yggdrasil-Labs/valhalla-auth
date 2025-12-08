@@ -39,4 +39,3 @@ public class CreateCredentialCmd extends Command {
     /** 是否主凭证（默认false） */
     private Boolean isPrimary = false;
 }
-

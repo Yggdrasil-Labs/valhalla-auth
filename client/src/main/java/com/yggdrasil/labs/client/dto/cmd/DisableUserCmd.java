@@ -23,4 +23,3 @@ public class DisableUserCmd extends Command {
     /** 禁用原因（可选） */
     private String reason;
 }
-

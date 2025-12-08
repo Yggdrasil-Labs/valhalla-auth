@@ -20,4 +20,3 @@ public class GetUserQuery extends Query {
     @NotNull(message = "用户ID不能为空")
     private Long userId;
 }
-

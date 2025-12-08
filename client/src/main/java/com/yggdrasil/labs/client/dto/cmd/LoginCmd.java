@@ -47,4 +47,3 @@ public class LoginCmd extends Command {
     /** 用户代理（可选） */
     private String userAgent;
 }
-
