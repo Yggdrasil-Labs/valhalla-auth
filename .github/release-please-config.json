@@ -1,16 +1,14 @@
 {
-  "bootstrap-sha": "c47e3cbeaf2b937bb5cd42fa700b44db68a0e9ac",
   "packages": {
     ".": {
       "release-type": "simple",
-      "package-name": "valhalla-auth",
       "changelog-path": "CHANGELOG.md",
       "include-v-in-tag": true,
       "extra-files": [
         {
           "type": "xml",
           "path": "pom.xml",
-          "xpath": "/project/properties/revision"
+          "xpath": "//*[local-name()='project']/*[local-name()='properties']/*[local-name()='revision']"
         }
       ],
       "changelog-sections": [
