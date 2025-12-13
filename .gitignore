@@ -40,4 +40,6 @@ doc/
 .cursor/
 openspec/
 
+### Sensitive files ###
 application-local.yml
+settings.xml
