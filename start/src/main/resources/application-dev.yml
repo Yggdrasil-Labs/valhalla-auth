@@ -1,15 +1,31 @@
+server:
+  port: 8081
+
+# 开发环境配置（使用 Nacos 配置中心）
 spring:
-  datasource:
-    driver-class-name: com.mysql.cj.jdbc.Driver
-    url: jdbc:mysql://8.xxx.xxx.8:3306/valhalla_auth
-    username: xxx
-    password: xxx
+  config:
+    import:
+      - optional:nacos:valhalla-auth.yaml?refreshEnabled=true
+      - optional:nacos:valhalla-auth-dev.yaml?refreshEnabled=true
+  cloud:
+    nacos:
+      config:
+        server-addr: nacos-standalone-derby:8848
+        namespace: dev
+        group: DEFAULT_GROUP
 
-logging:
-  level:
-    com.yggdrasil.labs.*: debug
-    root: info
-
-# 开发环境特定配置
-# 例如：数据库连接、Redis 等
-
+# Dubbo 配置（开发环境使用 Nacos 配置中心）
+dubbo:
+  # Nacos 配置中心（Dubbo 配置从 Nacos 读取）
+  config-center:
+    address: nacos://nacos-standalone-derby:8848
+    namespace: dev
+    group: dubbo
+  # 服务注册中心（使用 dev namespace）
+  registry:
+    address: nacos://nacos-standalone-derby:8848
+    parameters:
+      namespace: dev
+      group: valhalla-auth
+      # 不检查服务可用性（避免启动时的警告）
+      check: false

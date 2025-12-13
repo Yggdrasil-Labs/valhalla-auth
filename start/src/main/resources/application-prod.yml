@@ -1,8 +1,32 @@
+# 生产环境配置（使用 Nacos 配置中心）
+spring:
+  config:
+    import:
+      - optional:nacos:valhalla-auth.yaml?refreshEnabled=true
+      - optional:nacos:valhalla-auth-prod.yaml?refreshEnabled=true
+  cloud:
+    nacos:
+      config:
+        server-addr: localhost:18848
+        namespace: prod
+        group: DEFAULT_GROUP
+
+# Dubbo 配置（生产环境使用 Nacos 配置中心）
+dubbo:
+  # Nacos 配置中心（Dubbo 配置从 Nacos 读取）
+  config-center:
+    address: nacos://localhost:18848
+    namespace: prod
+    group: dubbo
+  # 服务注册中心（使用 prod namespace）
+  registry:
+    address: nacos://localhost:18848
+    parameters:
+      namespace: prod
+      # 生产环境建议保留检查，如需避免警告可设置为 false
+      check: true
+
 logging:
   level:
     com.yggdrasil.labs.*: warn
     root: warn
-
-# 生产环境特定配置
-# 例如：数据库连接、Redis、监控等
-

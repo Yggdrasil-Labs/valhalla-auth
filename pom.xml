@@ -6,7 +6,7 @@
     <parent>
         <groupId>com.yggdrasil.labs</groupId>
         <artifactId>mimir-boot-parent</artifactId>
-        <version>1.2.1</version>
+        <version>1.2.1-SNAPSHOT</version>
         <relativePath/>
     </parent>
 
@@ -27,7 +27,7 @@
         <project.reporting.outputEncoding>UTF-8</project.reporting.outputEncoding>
         <maven.deploy.skip>true</maven.deploy.skip>
 
-        <mimir-boot.version>1.2.1</mimir-boot.version>
+        <mimir-boot.version>1.2.1-SNAPSHOT</mimir-boot.version>
         <cola.components.version>5.0.0</cola.components.version>
     </properties>
 
@@ -136,6 +136,18 @@
             </dependency>
             <!--Validation API End -->
 
+            <!-- Dubbo -->
+            <dependency>
+                <groupId>org.apache.dubbo</groupId>
+                <artifactId>dubbo-spring-boot-starter</artifactId>
+                <version>3.2.0</version>
+            </dependency>
+            <dependency>
+                <groupId>org.apache.dubbo</groupId>
+                <artifactId>dubbo-registry-nacos</artifactId>
+                <version>3.2.0</version>
+            </dependency>
+            <!-- Dubbo End -->
 
         </dependencies>
     </dependencyManagement>
