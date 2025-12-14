@@ -3,7 +3,6 @@ spring:
   config:
     import:
       - optional:nacos:valhalla-auth.yaml?refreshEnabled=true
-      - optional:nacos:valhalla-auth-test.yaml?refreshEnabled=true
   cloud:
     nacos:
       config:
@@ -11,22 +10,7 @@ spring:
         namespace: test
         group: DEFAULT_GROUP
 
-# Dubbo 配置（测试环境使用 Nacos 配置中心）
-dubbo:
-  # Nacos 配置中心（Dubbo 配置从 Nacos 读取）
-  config-center:
-    address: nacos://localhost:18848
-    namespace: test
-    group: dubbo
-  # 服务注册中心（使用 test namespace）
-  registry:
-    address: nacos://localhost:18848
-    parameters:
-      namespace: test
-      # 不检查服务可用性（避免启动时的警告）
-      check: false
-
 logging:
   level:
-    com.yggdrasil.labs.*: info
     root: info
+    com.yggdrasil.labs.**.mapper: DEBUG

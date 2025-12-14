@@ -1,0 +1,31 @@
+# Dubbo 配置（所有环境通用）
+# ⚠️ 重要：Dubbo 配置放在 bootstrap 文件中，不会被 Nacos 配置刷新影响
+# ⚠️ 注意：请勿在 Nacos 配置中心的配置文件中添加任何 dubbo.* 前缀的配置
+dubbo:
+  application:
+    name: valhalla-auth
+    qos-enable: false
+    # 使用本地元数据，避免依赖外部配置
+    metadata-type: local
+
+  protocol:
+    name: dubbo
+    port: -1
+
+  consumer:
+    check: false
+
+  registry:
+    # 仅使用 Nacos 作为注册中心，不作为配置中心
+    address: ${DUBBO_REGISTRY_ADDRESS:nacos://127.0.0.1:18848}
+    parameters:
+      namespace: ${DUBBO_NAMESPACE:dev}
+      group: ${DUBBO_GROUP:valhalla-auth}
+    # 禁用注册中心的配置同步
+    use-as-config-center: false
+    use-as-metadata-center: false
+
+  # 禁用 Dubbo 配置中心，防止 Nacos 刷新导致 Dubbo 重新初始化
+  config-center:
+    highest-priority: false
+    check: false

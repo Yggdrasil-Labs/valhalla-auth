@@ -6,26 +6,21 @@ spring:
   config:
     import:
       - optional:nacos:valhalla-auth.yaml?refreshEnabled=true
-      - optional:nacos:valhalla-auth-dev.yaml?refreshEnabled=true
   cloud:
     nacos:
       config:
         server-addr: nacos-standalone-derby:8848
         namespace: dev
         group: DEFAULT_GROUP
+        # 启用配置刷新
+        refresh-enabled: true
 
-# Dubbo 配置（开发环境使用 Nacos 配置中心）
-dubbo:
-  # Nacos 配置中心（Dubbo 配置从 Nacos 读取）
-  config-center:
-    address: nacos://nacos-standalone-derby:8848
-    namespace: dev
-    group: dubbo
-  # 服务注册中心（使用 dev namespace）
-  registry:
-    address: nacos://nacos-standalone-derby:8848
-    parameters:
-      namespace: dev
-      group: valhalla-auth
-      # 不检查服务可用性（避免启动时的警告）
-      check: false
+logging:
+  level:
+    root: INFO
+    # 保留 SQL 日志（DEBUG 级别）
+    com.yggdrasil.labs.**.mapper: DEBUG
+    # 降低 Nacos 配置刷新相关日志级别，减少日志输出
+    com.alibaba.cloud.nacos.refresh: WARN
+    com.alibaba.cloud.nacos.configdata: WARN
+    com.alibaba.nacos.client.config: WARN

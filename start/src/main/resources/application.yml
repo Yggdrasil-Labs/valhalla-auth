@@ -3,15 +3,10 @@ spring:
     name: valhalla-auth
   profiles:
     active: local
-
-# Dubbo 基础配置（所有环境通用）
-dubbo:
-  protocol:
-    name: dubbo
-    port: 20880
-  provider:
-    timeout: 3000
-    retries: 0
+  config:
+    import:
+      # 导入 Dubbo 配置（不可刷新，优先加载）
+      - optional:classpath:bootstrap-dubbo.yaml
 
 # Actuator 健康检查配置
 management:
