@@ -20,7 +20,3 @@ logging:
     root: INFO
     # 保留 SQL 日志（DEBUG 级别）
     com.yggdrasil.labs.**.mapper: DEBUG
-    # 降低 Nacos 配置刷新相关日志级别，减少日志输出
-    com.alibaba.cloud.nacos.refresh: WARN
-    com.alibaba.cloud.nacos.configdata: WARN
-    com.alibaba.nacos.client.config: WARN

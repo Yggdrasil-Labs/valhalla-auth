@@ -17,3 +17,10 @@ management:
   endpoint:
     health:
       show-details: when-authorized
+
+logging:
+  level:
+    # 降低 Nacos 配置刷新相关日志级别，减少日志输出
+    com.alibaba.nacos: WARN
+    com.alibaba.cloud.nacos: WARN
+    org.apache.dubbo: WARN
