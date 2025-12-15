@@ -5,7 +5,7 @@
 
 set -e
 
-TAG="${1:-valhalla-auth:latest}"
+TAG="${1:-yggdrasil-labs/valhalla-auth:latest}"
 
 # 检查认证信息
 if [ -z "$GITHUB_ACTOR" ] || [ -z "$GITHUB_TOKEN" ]; then

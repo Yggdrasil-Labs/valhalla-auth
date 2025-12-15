@@ -3,7 +3,7 @@
 # ============================================
 
 param(
-    [string]$Tag = "valhalla-auth:latest",
+    [string]$Tag = "yggdrasil-labs/valhalla-auth:latest",
     [switch]$NoCache
 )
 
