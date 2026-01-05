@@ -5,13 +5,9 @@ import com.alibaba.cola.dto.Response;
 import com.alibaba.cola.dto.SingleResponse;
 import com.yggdrasil.labs.client.dto.cmd.CreateCredentialCmd;
 import com.yggdrasil.labs.client.dto.cmd.DeleteCredentialCmd;
-import com.yggdrasil.labs.client.dto.cmd.DisableUserCmd;
-import com.yggdrasil.labs.client.dto.cmd.EnableUserCmd;
-import com.yggdrasil.labs.client.dto.cmd.LockUserCmd;
 import com.yggdrasil.labs.client.dto.cmd.LoginCmd;
 import com.yggdrasil.labs.client.dto.cmd.LogoutCmd;
 import com.yggdrasil.labs.client.dto.cmd.RefreshTokenCmd;
-import com.yggdrasil.labs.client.dto.cmd.UnlockUserCmd;
 import com.yggdrasil.labs.client.dto.cmd.VerifyTokenCmd;
 import com.yggdrasil.labs.client.dto.co.AuthUserCO;
 import com.yggdrasil.labs.client.dto.co.CredentialCO;
@@ -61,38 +57,6 @@ public interface AuthClient {
      * @return 验证结果（包含用户ID等信息）
      */
     SingleResponse<AuthUserCO> verifyToken(VerifyTokenCmd cmd);
-
-    /**
-     * 锁定账户
-     *
-     * @param cmd 锁定账户命令
-     * @return 操作结果
-     */
-    Response lockUser(LockUserCmd cmd);
-
-    /**
-     * 解锁账户
-     *
-     * @param cmd 解锁账户命令
-     * @return 操作结果
-     */
-    Response unlockUser(UnlockUserCmd cmd);
-
-    /**
-     * 禁用账户
-     *
-     * @param cmd 禁用账户命令
-     * @return 操作结果
-     */
-    Response disableUser(DisableUserCmd cmd);
-
-    /**
-     * 启用账户
-     *
-     * @param cmd 启用账户命令
-     * @return 操作结果
-     */
-    Response enableUser(EnableUserCmd cmd);
 
     /**
      * 创建凭证

@@ -1,7 +1,5 @@
 package com.yggdrasil.labs.app.auth.assembler;
 
-import java.time.Duration;
-import java.time.LocalDateTime;
 import java.util.List;
 
 import jakarta.annotation.Resource;
@@ -9,13 +7,11 @@ import jakarta.annotation.Resource;
 import org.springframework.stereotype.Component;
 
 import com.yggdrasil.labs.app.auth.convert.AuthConverter;
-import com.yggdrasil.labs.client.dto.co.AuthUserCO;
 import com.yggdrasil.labs.client.dto.co.CredentialCO;
 import com.yggdrasil.labs.client.dto.co.LoginResultCO;
 import com.yggdrasil.labs.client.dto.co.TokenCO;
+import com.yggdrasil.labs.client.dto.enums.TokenTypeEnum;
 import com.yggdrasil.labs.domain.auth.model.AuthCredential;
-import com.yggdrasil.labs.domain.auth.model.AuthToken;
-import com.yggdrasil.labs.domain.auth.model.AuthUser;
 import com.yggdrasil.labs.domain.auth.model.enums.CredentialType;
 
 /**
@@ -30,55 +26,32 @@ public class AuthAssembler {
 
     @Resource private AuthConverter authConverter;
 
-    /** 组装 AuthUserCO */
-    public AuthUserCO toAuthUserCO(AuthUser authUser) {
-        if (authUser == null) {
-            return null;
-        }
-        AuthUserCO co = new AuthUserCO();
-        co.setUserId(authUser.getUserId());
-        co.setStatus(authConverter.toClientUserStatus(authUser.getStatus()));
-        co.setLastLoginTime(authUser.getLastLoginTime());
-        co.setLastLoginIp(authUser.getLastLoginIp());
-        co.setLockedUntil(authUser.getLockedUntil());
-        co.setCreateTime(authUser.getCreateTime());
-        co.setUpdateTime(authUser.getUpdateTime());
-        return co;
-    }
-
     /** 组装 TokenCO */
     public TokenCO toTokenCO(
-            AuthToken accessToken,
-            AuthToken refreshToken,
             String accessTokenValue,
-            String refreshTokenValue) {
-        if (accessToken == null) {
-            return null;
-        }
+            String refreshTokenValue,
+            TokenTypeEnum tokenType,
+            Long expiresIn,
+            java.time.LocalDateTime expiresAt,
+            java.time.LocalDateTime issuedAt,
+            String deviceId,
+            String deviceType) {
         TokenCO co = new TokenCO();
         co.setAccessToken(accessTokenValue);
         co.setRefreshToken(refreshTokenValue);
-        co.setTokenType(authConverter.toClientTokenType(accessToken.getTokenType()));
-        if (accessToken.getExpiresAt() != null) {
-            Duration duration = Duration.between(LocalDateTime.now(), accessToken.getExpiresAt());
-            co.setExpiresIn(duration.getSeconds());
-            co.setExpiresAt(accessToken.getExpiresAt());
-        }
-        co.setIssuedAt(accessToken.getIssuedAt());
-        co.setDeviceId(accessToken.getDeviceId());
-        co.setDeviceType(accessToken.getDeviceType());
+        co.setTokenType(tokenType);
+        co.setExpiresIn(expiresIn);
+        co.setExpiresAt(expiresAt);
+        co.setIssuedAt(issuedAt);
+        co.setDeviceId(deviceId);
+        co.setDeviceType(deviceType);
         return co;
     }
 
-    /** 组装 TokenCO（仅 Access Token） */
-    public TokenCO toTokenCO(AuthToken accessToken, String accessTokenValue) {
-        return toTokenCO(accessToken, null, accessTokenValue, null);
-    }
-
     /** 组装 LoginResultCO */
-    public LoginResultCO toLoginResultCO(AuthUser authUser, TokenCO tokenCO) {
+    public LoginResultCO toLoginResultCO(Long userId, TokenCO tokenCO) {
         LoginResultCO co = new LoginResultCO();
-        co.setUser(toAuthUserCO(authUser));
+        // TODO: 如果需要用户信息，可能需要调用用户服务获取
         co.setToken(tokenCO);
         return co;
     }
@@ -96,8 +69,8 @@ public class AuthAssembler {
         co.setCredentialValue(
                 maskCredentialValue(
                         credential.getCredentialValue(), credential.getCredentialType()));
-        co.setThirdPartyId(credential.getThirdPartyId());
-        co.setThirdPartyName(credential.getThirdPartyName());
+        // TODO: CredentialCO 需要添加 provider 字段，暂时保留 thirdPartyId 和 thirdPartyName 以保持兼容
+        // co.setProvider(credential.getProvider());
         co.setIsPrimary(credential.getIsPrimary());
         co.setVerified(credential.getVerified());
         co.setVerifiedAt(credential.getVerifiedAt());

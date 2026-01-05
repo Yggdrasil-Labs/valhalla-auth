@@ -31,20 +31,14 @@ public class AuthCredentialDO {
     /** 用户ID（关联用户服务，全局唯一） */
     private Long userId;
 
-    /**
-     * 凭证类型：1-用户名(USERNAME), 2-手机号(PHONE), 3-邮箱(EMAIL), 4-微信(WECHAT), 5-Google(GOOGLE),
-     * 6-其他三方(OTHER)
-     */
+    /** 凭证类型：1-用户名(USERNAME), 2-手机号(PHONE), 3-邮箱(EMAIL), 4-OAUTH */
     private Integer credentialType;
 
     /** 凭证值（用户名/手机号/邮箱/三方ID） */
     private String credentialValue;
 
-    /** 三方登录的唯一ID（仅三方登录时使用） */
-    private String thirdPartyId;
-
-    /** 三方登录名称（如：wechat, google） */
-    private String thirdPartyName;
+    /** 三方提供方（仅 OAUTH 类型使用，如：wechat, google, github） */
+    private String provider;
 
     /** 是否主凭证：0-否, 1-是 */
     private Boolean isPrimary;

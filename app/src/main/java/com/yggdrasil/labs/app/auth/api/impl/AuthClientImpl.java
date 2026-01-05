@@ -9,25 +9,17 @@ import com.alibaba.cola.dto.Response;
 import com.alibaba.cola.dto.SingleResponse;
 import com.yggdrasil.labs.app.auth.executor.CreateCredentialExecutor;
 import com.yggdrasil.labs.app.auth.executor.DeleteCredentialExecutor;
-import com.yggdrasil.labs.app.auth.executor.DisableUserExecutor;
-import com.yggdrasil.labs.app.auth.executor.EnableUserExecutor;
-import com.yggdrasil.labs.app.auth.executor.LockUserExecutor;
 import com.yggdrasil.labs.app.auth.executor.LoginExecutor;
 import com.yggdrasil.labs.app.auth.executor.LogoutExecutor;
 import com.yggdrasil.labs.app.auth.executor.RefreshTokenExecutor;
-import com.yggdrasil.labs.app.auth.executor.UnlockUserExecutor;
 import com.yggdrasil.labs.app.auth.executor.VerifyTokenExecutor;
 import com.yggdrasil.labs.app.auth.query.AuthQuery;
 import com.yggdrasil.labs.client.api.AuthClient;
 import com.yggdrasil.labs.client.dto.cmd.CreateCredentialCmd;
 import com.yggdrasil.labs.client.dto.cmd.DeleteCredentialCmd;
-import com.yggdrasil.labs.client.dto.cmd.DisableUserCmd;
-import com.yggdrasil.labs.client.dto.cmd.EnableUserCmd;
-import com.yggdrasil.labs.client.dto.cmd.LockUserCmd;
 import com.yggdrasil.labs.client.dto.cmd.LoginCmd;
 import com.yggdrasil.labs.client.dto.cmd.LogoutCmd;
 import com.yggdrasil.labs.client.dto.cmd.RefreshTokenCmd;
-import com.yggdrasil.labs.client.dto.cmd.UnlockUserCmd;
 import com.yggdrasil.labs.client.dto.cmd.VerifyTokenCmd;
 import com.yggdrasil.labs.client.dto.co.AuthUserCO;
 import com.yggdrasil.labs.client.dto.co.CredentialCO;
@@ -51,10 +43,6 @@ public class AuthClientImpl implements AuthClient {
     @Resource private RefreshTokenExecutor refreshTokenExecutor;
     @Resource private LogoutExecutor logoutExecutor;
     @Resource private VerifyTokenExecutor verifyTokenExecutor;
-    @Resource private LockUserExecutor lockUserExecutor;
-    @Resource private UnlockUserExecutor unlockUserExecutor;
-    @Resource private DisableUserExecutor disableUserExecutor;
-    @Resource private EnableUserExecutor enableUserExecutor;
     @Resource private CreateCredentialExecutor createCredentialExecutor;
     @Resource private DeleteCredentialExecutor deleteCredentialExecutor;
     @Resource private AuthQuery authQuery;
@@ -80,26 +68,6 @@ public class AuthClientImpl implements AuthClient {
     }
 
     @Override
-    public Response lockUser(LockUserCmd cmd) {
-        return lockUserExecutor.execute(cmd);
-    }
-
-    @Override
-    public Response unlockUser(UnlockUserCmd cmd) {
-        return unlockUserExecutor.execute(cmd);
-    }
-
-    @Override
-    public Response disableUser(DisableUserCmd cmd) {
-        return disableUserExecutor.execute(cmd);
-    }
-
-    @Override
-    public Response enableUser(EnableUserCmd cmd) {
-        return enableUserExecutor.execute(cmd);
-    }
-
-    @Override
     public Response createCredential(CreateCredentialCmd cmd) {
         return createCredentialExecutor.execute(cmd);
     }
@@ -111,7 +79,9 @@ public class AuthClientImpl implements AuthClient {
 
     @Override
     public SingleResponse<AuthUserCO> getUser(GetUserQuery query) {
-        return authQuery.getUser(query);
+        // TODO: 用户信息现在应该从用户服务获取，而不是从认证服务
+        // 认证服务不再存储用户信息
+        return SingleResponse.buildFailure("NOT_IMPLEMENTED", "用户信息查询功能已移除，请使用用户服务");
     }
 
     @Override
@@ -121,6 +91,8 @@ public class AuthClientImpl implements AuthClient {
 
     @Override
     public SingleResponse<TokenCO> getToken(GetTokenQuery query) {
-        return authQuery.getToken(query);
+        // TODO: Token 信息现在存储在 Redis 中，需要从 Redis 查询
+        // 实现从 Redis 查询 Token 信息的逻辑
+        return SingleResponse.buildFailure("NOT_IMPLEMENTED", "Token 查询功能需要从 Redis 实现");
     }
 }

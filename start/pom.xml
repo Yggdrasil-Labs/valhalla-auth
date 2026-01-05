@@ -64,10 +64,14 @@
             <artifactId>spring-boot-starter-actuator</artifactId>
         </dependency>
 
-        <!-- Dubbo -->
+        <!-- RPC -->
         <dependency>
-            <groupId>org.apache.dubbo</groupId>
-            <artifactId>dubbo-spring-boot-starter</artifactId>
+            <groupId>com.yggdrasil.labs</groupId>
+            <artifactId>mimir-boot-starter-rpc-core</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>com.yggdrasil.labs</groupId>
+            <artifactId>mimir-boot-starter-dubbo</artifactId>
         </dependency>
 
     </dependencies>

@@ -57,10 +57,10 @@ public class AuthCredentialRepositoryImpl implements AuthCredentialRepository {
     }
 
     @Override
-    public AuthCredential findByThirdParty(String thirdPartyName, String thirdPartyId) {
+    public AuthCredential findByThirdParty(String provider, String providerUserId) {
         LambdaQueryWrapper<AuthCredentialDO> wrapper = new LambdaQueryWrapper<>();
-        wrapper.eq(AuthCredentialDO::getThirdPartyName, thirdPartyName)
-                .eq(AuthCredentialDO::getThirdPartyId, thirdPartyId);
+        wrapper.eq(AuthCredentialDO::getProvider, provider)
+                .eq(AuthCredentialDO::getCredentialValue, providerUserId);
         AuthCredentialDO credentialDO = authCredentialService.getOne(wrapper);
         if (credentialDO == null) {
             return null;

@@ -41,12 +41,13 @@ public class CreateCredentialExecutor {
 
         // 创建凭证
         AuthCredential credential;
-        if (cmd.getThirdPartyId() != null && cmd.getThirdPartyName() != null) {
+        // TODO: CreateCredentialCmd 需要添加 provider 字段，暂时使用 thirdPartyName 作为 provider
+        if (credentialType == CredentialType.OAUTH && cmd.getThirdPartyName() != null) {
             credential =
                     AuthCredential.createThirdParty(
                             cmd.getUserId(),
                             credentialType,
-                            cmd.getThirdPartyId(),
+                            cmd.getCredentialValue(),
                             cmd.getThirdPartyName());
         } else {
             credential =

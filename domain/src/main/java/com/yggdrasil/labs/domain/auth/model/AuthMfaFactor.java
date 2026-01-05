@@ -3,12 +3,13 @@ package com.yggdrasil.labs.domain.auth.model;
 import java.time.LocalDateTime;
 
 import com.alibaba.cola.domain.Entity;
+import com.yggdrasil.labs.domain.auth.model.enums.MfaFactorStatus;
 import com.yggdrasil.labs.domain.auth.model.enums.MfaType;
 
 import lombok.Data;
 
 /**
- * 多因子认证实体
+ * 多因子认证因子实体
  *
  * <p>支持 TOTP、短信验证码、邮箱验证码、U2F Key 配置
  *
@@ -16,7 +17,7 @@ import lombok.Data;
  */
 @Data
 @Entity
-public class AuthMfa {
+public class AuthMfaFactor {
 
     /** MFA ID（主键，雪花ID） */
     private Long mfaId;
@@ -48,8 +49,11 @@ public class AuthMfa {
     /** 备用验证码（JSON数组，加密存储） */
     private String backupCodes;
 
-    /** 是否启用 */
-    private Boolean isEnabled;
+    /** 因子状态：1-启用, 2-禁用 */
+    private MfaFactorStatus status;
+
+    /** 最大验证尝试次数（配置值，实际计数在Redis） */
+    private Integer maxAttempts;
 
     /** 是否默认MFA方式 */
     private Boolean isDefault;
@@ -63,29 +67,34 @@ public class AuthMfa {
     /** 更新时间 */
     private LocalDateTime updateTime;
 
-    /** 创建MFA配置 */
-    public static AuthMfa create(Long userId, MfaType mfaType, String mfaName) {
-        AuthMfa mfa = new AuthMfa();
-        mfa.setUserId(userId);
-        mfa.setMfaType(mfaType);
-        mfa.setMfaName(mfaName);
-        mfa.setIsEnabled(false);
-        mfa.setIsDefault(false);
-        mfa.setCreateTime(LocalDateTime.now());
-        mfa.setUpdateTime(LocalDateTime.now());
-        return mfa;
+    /** 创建MFA因子 */
+    public static AuthMfaFactor create(Long userId, MfaType mfaType, String mfaName) {
+        AuthMfaFactor factor = new AuthMfaFactor();
+        factor.setUserId(userId);
+        factor.setMfaType(mfaType);
+        factor.setMfaName(mfaName);
+        factor.setStatus(MfaFactorStatus.DISABLED);
+        factor.setMaxAttempts(5);
+        factor.setIsDefault(false);
+        factor.setCreateTime(LocalDateTime.now());
+        factor.setUpdateTime(LocalDateTime.now());
+        return factor;
     }
 
-    /** 启用MFA */
+    /** 设置状态 */
+    public void setStatus(MfaFactorStatus status) {
+        this.status = status;
+        this.updateTime = LocalDateTime.now();
+    }
+
+    /** 启用MFA因子 */
     public void enable() {
-        this.isEnabled = true;
-        this.updateTime = LocalDateTime.now();
+        setStatus(MfaFactorStatus.ENABLED);
     }
 
-    /** 禁用MFA */
+    /** 禁用MFA因子 */
     public void disable() {
-        this.isEnabled = false;
-        this.updateTime = LocalDateTime.now();
+        setStatus(MfaFactorStatus.DISABLED);
     }
 
     /** 设置为默认MFA方式 */
@@ -98,5 +107,10 @@ public class AuthMfa {
     public void recordUsage() {
         this.lastUsedAt = LocalDateTime.now();
         this.updateTime = LocalDateTime.now();
+    }
+
+    /** 检查是否启用 */
+    public boolean isEnabled() {
+        return status == MfaFactorStatus.ENABLED;
     }
 }

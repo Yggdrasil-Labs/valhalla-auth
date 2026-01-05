@@ -30,11 +30,8 @@ public class AuthCredential {
     /** 凭证值（用户名/手机号/邮箱/三方ID） */
     private String credentialValue;
 
-    /** 三方登录的唯一ID（仅三方登录时使用） */
-    private String thirdPartyId;
-
-    /** 三方登录名称（如：wechat, google） */
-    private String thirdPartyName;
+    /** 三方提供方（仅 OAUTH 类型使用，如：wechat, google, github） */
+    private String provider;
 
     /** 是否主凭证 */
     private Boolean isPrimary;
@@ -67,13 +64,9 @@ public class AuthCredential {
 
     /** 创建三方登录凭证 */
     public static AuthCredential createThirdParty(
-            Long userId,
-            CredentialType credentialType,
-            String thirdPartyId,
-            String thirdPartyName) {
-        AuthCredential credential = create(userId, credentialType, thirdPartyId);
-        credential.setThirdPartyId(thirdPartyId);
-        credential.setThirdPartyName(thirdPartyName);
+            Long userId, CredentialType credentialType, String providerUserId, String provider) {
+        AuthCredential credential = create(userId, credentialType, providerUserId);
+        credential.setProvider(provider);
         return credential;
     }
 

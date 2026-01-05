@@ -11,18 +11,18 @@ import com.yggdrasil.labs.mybatis.annotation.AutoMybatis;
 import lombok.Data;
 
 /**
- * 多因子认证表数据对象
+ * 多因子认证因子表数据对象
  *
- * <p>对应数据库表：auth_mfa
+ * <p>对应数据库表：auth_mfa_factor
  *
  * <p>支持 TOTP、短信验证码、邮箱验证码、U2F Key 配置
  *
  * @author YoungerYang-Y
  */
 @Data
-@TableName("auth_mfa")
+@TableName("auth_mfa_factor")
 @AutoMybatis
-public class AuthMfaDO {
+public class AuthMfaFactorDO {
 
     /** MFA ID（主键，雪花ID） */
     @TableId(type = IdType.INPUT)
@@ -55,8 +55,11 @@ public class AuthMfaDO {
     /** 备用验证码（JSON数组，加密存储） */
     private String backupCodes;
 
-    /** 是否启用：0-未启用, 1-已启用 */
-    private Boolean isEnabled;
+    /** 因子状态：1-启用, 2-禁用 */
+    private Integer status;
+
+    /** 最大验证尝试次数（配置值，实际计数在Redis） */
+    private Integer maxAttempts;
 
     /** 是否默认MFA方式：0-否, 1-是 */
     private Boolean isDefault;

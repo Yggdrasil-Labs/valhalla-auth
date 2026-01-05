@@ -19,14 +19,8 @@ public enum CredentialType {
     /** 邮箱 */
     EMAIL(3, "邮箱"),
 
-    /** 微信 */
-    WECHAT(4, "微信"),
-
-    /** Google */
-    GOOGLE(5, "Google"),
-
-    /** 其他三方 */
-    OTHER(6, "其他三方");
+    /** OAuth 三方登录 */
+    OAUTH(4, "OAuth");
 
     private final Integer code;
     private final String desc;
@@ -51,6 +45,6 @@ public enum CredentialType {
 
     /** 是否为三方登录 */
     public boolean isThirdParty() {
-        return this == WECHAT || this == GOOGLE || this == OTHER;
+        return this == OAUTH;
     }
 }

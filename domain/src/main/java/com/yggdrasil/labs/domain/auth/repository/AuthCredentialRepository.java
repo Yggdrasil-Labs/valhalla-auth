@@ -22,7 +22,7 @@ public interface AuthCredentialRepository {
     AuthCredential findByTypeAndValue(CredentialType credentialType, String credentialValue);
 
     /** 根据三方登录信息查找 */
-    AuthCredential findByThirdParty(String thirdPartyName, String thirdPartyId);
+    AuthCredential findByThirdParty(String provider, String providerUserId);
 
     /** 保存凭证 */
     void save(AuthCredential credential);

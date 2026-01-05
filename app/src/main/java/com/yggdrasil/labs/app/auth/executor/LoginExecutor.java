@@ -12,11 +12,10 @@ import com.yggdrasil.labs.client.dto.cmd.LoginCmd;
 import com.yggdrasil.labs.client.dto.co.LoginResultCO;
 import com.yggdrasil.labs.client.dto.enums.AuthErrorCode;
 import com.yggdrasil.labs.domain.auth.model.AuthCredential;
-import com.yggdrasil.labs.domain.auth.model.AuthUser;
+import com.yggdrasil.labs.domain.auth.model.AuthPassword;
 import com.yggdrasil.labs.domain.auth.model.enums.CredentialType;
 import com.yggdrasil.labs.domain.auth.repository.AuthCredentialRepository;
-import com.yggdrasil.labs.domain.auth.repository.AuthTokenRepository;
-import com.yggdrasil.labs.domain.auth.repository.AuthUserRepository;
+import com.yggdrasil.labs.domain.auth.repository.AuthPasswordRepository;
 
 /**
  * 登录用例执行器
@@ -26,9 +25,8 @@ import com.yggdrasil.labs.domain.auth.repository.AuthUserRepository;
 @Component
 public class LoginExecutor {
 
-    @Resource private AuthUserRepository authUserRepository;
     @Resource private AuthCredentialRepository authCredentialRepository;
-    @Resource private AuthTokenRepository authTokenRepository;
+    @Resource private AuthPasswordRepository authPasswordRepository;
     @Resource private AuthAssembler authAssembler;
 
     /** 执行登录用例 */
@@ -46,32 +44,28 @@ public class LoginExecutor {
                     AuthErrorCode.CREDENTIAL_NOT_FOUND.getErrDesc());
         }
 
-        // 2. 查找用户认证信息
-        AuthUser authUser = authUserRepository.findByUserId(credential.getUserId());
-        if (authUser == null) {
+        // 2. 查找用户密码信息
+        AuthPassword authPassword = authPasswordRepository.findByUserId(credential.getUserId());
+        if (authPassword == null) {
             return SingleResponse.buildFailure(
-                    AuthErrorCode.USER_NOT_FOUND.getErrCode(),
-                    AuthErrorCode.USER_NOT_FOUND.getErrDesc());
+                    AuthErrorCode.PASSWORD_NOT_SET.getErrCode(),
+                    AuthErrorCode.PASSWORD_NOT_SET.getErrDesc());
         }
 
-        // 3. 检查账户状态
-        if (!authUser.isAvailable()) {
+        // 3. 检查密码状态
+        if (!authPassword.isValid()) {
             return SingleResponse.buildFailure(
                     AuthErrorCode.ACCOUNT_UNAVAILABLE.getErrCode(),
                     AuthErrorCode.ACCOUNT_UNAVAILABLE.getErrDesc());
         }
 
         // 4. 验证密码
-        // TODO: 实现密码验证逻辑（BCrypt）
-        if (authUser.getPasswordHash() == null) {
-            return SingleResponse.buildFailure(
-                    AuthErrorCode.PASSWORD_NOT_SET.getErrCode(),
-                    AuthErrorCode.PASSWORD_NOT_SET.getErrDesc());
-        }
-        // if (!passwordService.matches(cmd.getPassword(), authUser.getPasswordHash())) {
+        // TODO: 实现密码验证逻辑（BCrypt/Argon2id/PBKDF2）
+        // if (!passwordService.matches(cmd.getPassword(), authPassword.getPasswordHash(),
+        // authPassword.getPasswordAlgo())) {
         //     return SingleResponse.buildFailure(
         //             AuthErrorCode.PASSWORD_INCORRECT.getErrCode(),
-        // AuthErrorCode.PASSWORD_INCORRECT.getErrDesc());
+        //             AuthErrorCode.PASSWORD_INCORRECT.getErrDesc());
         // }
 
         // 5. 生成 Token
@@ -81,9 +75,8 @@ public class LoginExecutor {
         // 6. 保存 Token 记录
         // TODO: 保存 Token 到数据库和 Redis
 
-        // 7. 更新用户登录信息
-        authUser.recordLogin(cmd.getIpAddress());
-        authUserRepository.update(authUser);
+        // 7. 更新密码最后使用时间（如果需要）
+        // TODO: 如果需要记录最后登录时间，可以通过其他方式实现（如 Redis 或用户服务）
 
         // 8. 组装返回结果
         // TODO: 返回完整的 LoginResultCO
