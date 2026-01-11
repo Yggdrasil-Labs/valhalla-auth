@@ -6,8 +6,8 @@ import org.springframework.stereotype.Component;
 import org.springframework.transaction.annotation.Transactional;
 
 import com.alibaba.cola.dto.Response;
-import com.yggdrasil.labs.client.dto.cmd.DeleteCredentialCmd;
-import com.yggdrasil.labs.client.dto.enums.AuthErrorCode;
+import com.yggdrasil.labs.app.auth.dto.cmd.DeleteCredentialCmd;
+import com.yggdrasil.labs.app.auth.dto.enums.AuthErrorCode;
 import com.yggdrasil.labs.domain.auth.model.AuthCredential;
 import com.yggdrasil.labs.domain.auth.repository.AuthCredentialRepository;
 

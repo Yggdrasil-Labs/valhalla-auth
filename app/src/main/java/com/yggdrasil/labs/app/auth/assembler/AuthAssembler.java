@@ -7,18 +7,18 @@ import jakarta.annotation.Resource;
 import org.springframework.stereotype.Component;
 
 import com.yggdrasil.labs.app.auth.convert.AuthConverter;
-import com.yggdrasil.labs.client.dto.co.CredentialCO;
-import com.yggdrasil.labs.client.dto.co.LoginResultCO;
-import com.yggdrasil.labs.client.dto.co.TokenCO;
-import com.yggdrasil.labs.client.dto.co.UserInitializationCO;
-import com.yggdrasil.labs.client.dto.enums.TokenTypeEnum;
+import com.yggdrasil.labs.app.auth.dto.co.CredentialCO;
+import com.yggdrasil.labs.app.auth.dto.co.LoginResultCO;
+import com.yggdrasil.labs.app.auth.dto.co.TokenCO;
+import com.yggdrasil.labs.app.auth.dto.co.UserInitializationCO;
+import com.yggdrasil.labs.app.auth.dto.enums.TokenTypeEnum;
 import com.yggdrasil.labs.domain.auth.model.AuthCredential;
 import com.yggdrasil.labs.domain.auth.model.enums.CredentialType;
 
 /**
  * 认证对象组装器
  *
- * <p>负责将 Domain Entity 组装为 Client CO 对象
+ * <p>负责将 Domain Entity 组装为 App 层 CO 对象
  *
  * @author YoungerYang-Y
  */

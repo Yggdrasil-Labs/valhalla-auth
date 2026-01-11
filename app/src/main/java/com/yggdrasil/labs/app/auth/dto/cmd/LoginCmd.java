@@ -1,19 +1,24 @@
-package com.yggdrasil.labs.adapter.web.request;
+package com.yggdrasil.labs.app.auth.dto.cmd;
 
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
 
+import com.alibaba.cola.dto.Command;
 import com.yggdrasil.labs.app.auth.dto.enums.CredentialTypeEnum;
 
 import lombok.Data;
+import lombok.EqualsAndHashCode;
 
 /**
- * 登录请求
+ * 登录命令
+ *
+ * <p>支持用户名/手机号/邮箱 + 密码登录
  *
  * @author YoungerYang-Y
  */
 @Data
-public class LoginRequest {
+@EqualsAndHashCode(callSuper = false)
+public class LoginCmd extends Command {
 
     /** 凭证类型 */
     @NotNull(message = "凭证类型不能为空")

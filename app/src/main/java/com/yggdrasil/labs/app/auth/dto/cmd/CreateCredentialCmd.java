@@ -1,19 +1,22 @@
-package com.yggdrasil.labs.adapter.web.request;
+package com.yggdrasil.labs.app.auth.dto.cmd;
 
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
 
+import com.alibaba.cola.dto.Command;
 import com.yggdrasil.labs.app.auth.dto.enums.CredentialTypeEnum;
 
 import lombok.Data;
+import lombok.EqualsAndHashCode;
 
 /**
- * 创建凭证请求
+ * 创建凭证命令
  *
  * @author YoungerYang-Y
  */
 @Data
-public class CreateCredentialRequest {
+@EqualsAndHashCode(callSuper = false)
+public class CreateCredentialCmd extends Command {
 
     /** 用户ID */
     @NotNull(message = "用户ID不能为空")

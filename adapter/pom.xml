@@ -13,7 +13,12 @@
     <name>adapter</name>
 
     <dependencies>
-        <!-- 适配层只依赖对外契约（client），不直接依赖应用实现（app） -->
+        <!-- 适配层依赖应用层（app），用于 Controller 调用 ApplicationService -->
+        <dependency>
+            <groupId>com.yggdrasil.labs</groupId>
+            <artifactId>app</artifactId>
+        </dependency>
+        <!-- 适配层依赖 client 层，用于实现 Dubbo RPC 接口 -->
         <dependency>
             <groupId>com.yggdrasil.labs</groupId>
             <artifactId>client</artifactId>

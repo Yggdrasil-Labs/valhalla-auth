@@ -3,9 +3,9 @@ package com.yggdrasil.labs.app.auth.convert;
 import org.mapstruct.Mapper;
 import org.mapstruct.factory.Mappers;
 
-import com.yggdrasil.labs.client.dto.enums.CredentialTypeEnum;
-import com.yggdrasil.labs.client.dto.enums.TokenTypeEnum;
-import com.yggdrasil.labs.client.dto.enums.UserStatusEnum;
+import com.yggdrasil.labs.app.auth.dto.enums.CredentialTypeEnum;
+import com.yggdrasil.labs.app.auth.dto.enums.TokenTypeEnum;
+import com.yggdrasil.labs.app.auth.dto.enums.UserStatusEnum;
 import com.yggdrasil.labs.domain.auth.model.enums.CredentialType;
 import com.yggdrasil.labs.domain.auth.model.enums.TokenType;
 import com.yggdrasil.labs.domain.auth.model.enums.UserStatus;
@@ -13,7 +13,7 @@ import com.yggdrasil.labs.domain.auth.model.enums.UserStatus;
 /**
  * 认证对象转换器
  *
- * <p>负责 Client DTO 与 Domain Entity 之间的转换
+ * <p>负责 App 层 DTO 与 Domain Entity 之间的转换
  *
  * @author YoungerYang-Y
  */

@@ -3,9 +3,9 @@ package com.yggdrasil.labs.app.auth.executor;
 import org.springframework.stereotype.Component;
 
 import com.alibaba.cola.dto.SingleResponse;
-import com.yggdrasil.labs.client.dto.cmd.RefreshTokenCmd;
-import com.yggdrasil.labs.client.dto.co.TokenCO;
-import com.yggdrasil.labs.client.dto.enums.AuthErrorCode;
+import com.yggdrasil.labs.app.auth.dto.cmd.RefreshTokenCmd;
+import com.yggdrasil.labs.app.auth.dto.co.TokenCO;
+import com.yggdrasil.labs.app.auth.dto.enums.AuthErrorCode;
 
 /**
  * Token 刷新用例执行器

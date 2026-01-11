@@ -1,30 +1,28 @@
-package com.yggdrasil.labs.adapter.web.request;
+package com.yggdrasil.labs.client.dto.cmd;
 
-import jakarta.validation.constraints.NotBlank;
-import jakarta.validation.constraints.NotNull;
+import java.io.Serializable;
 
-import com.yggdrasil.labs.app.auth.dto.enums.CredentialTypeEnum;
+import com.yggdrasil.labs.client.dto.enums.RpcCredentialTypeEnum;
 
 import lombok.Data;
 
 /**
- * 创建凭证请求
+ * 创建凭证命令（RPC 接口用）
  *
  * @author YoungerYang-Y
  */
 @Data
-public class CreateCredentialRequest {
+public class RpcCreateCredentialCmd implements Serializable {
+
+    private static final long serialVersionUID = 1L;
 
     /** 用户ID */
-    @NotNull(message = "用户ID不能为空")
     private Long userId;
 
     /** 凭证类型 */
-    @NotNull(message = "凭证类型不能为空")
-    private CredentialTypeEnum credentialType;
+    private RpcCredentialTypeEnum credentialType;
 
     /** 凭证值（用户名/手机号/邮箱/三方ID） */
-    @NotBlank(message = "凭证值不能为空")
     private String credentialValue;
 
     /** 三方登录的唯一ID（仅三方登录时使用） */

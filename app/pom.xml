@@ -13,14 +13,16 @@
     <name>app</name>
 
     <dependencies>
-        <!-- 应用层依赖对外契约（client）和领域层（domain），不直接依赖基础设施实现 -->
-        <dependency>
-            <groupId>com.yggdrasil.labs</groupId>
-            <artifactId>client</artifactId>
-        </dependency>
+        <!-- 应用层依赖领域层（domain），不依赖 client 层 -->
         <dependency>
             <groupId>com.yggdrasil.labs</groupId>
             <artifactId>domain</artifactId>
+        </dependency>
+
+        <!-- COLA DTO 基础类 -->
+        <dependency>
+            <groupId>com.alibaba.cola</groupId>
+            <artifactId>cola-component-dto</artifactId>
         </dependency>
 
         <!-- DTO/DO 转换 -->

@@ -6,9 +6,9 @@ import org.springframework.stereotype.Component;
 
 import com.alibaba.cola.dto.SingleResponse;
 import com.yggdrasil.labs.app.auth.assembler.AuthAssembler;
-import com.yggdrasil.labs.client.dto.cmd.VerifyTokenCmd;
-import com.yggdrasil.labs.client.dto.co.AuthUserCO;
-import com.yggdrasil.labs.client.dto.enums.AuthErrorCode;
+import com.yggdrasil.labs.app.auth.dto.cmd.VerifyTokenCmd;
+import com.yggdrasil.labs.app.auth.dto.co.AuthUserCO;
+import com.yggdrasil.labs.app.auth.dto.enums.AuthErrorCode;
 
 /**
  * Token 验证用例执行器

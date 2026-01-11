@@ -8,8 +8,8 @@ import org.springframework.stereotype.Component;
 
 import com.alibaba.cola.dto.MultiResponse;
 import com.yggdrasil.labs.app.auth.assembler.AuthAssembler;
-import com.yggdrasil.labs.client.dto.co.CredentialCO;
-import com.yggdrasil.labs.client.dto.query.ListCredentialsQuery;
+import com.yggdrasil.labs.app.auth.dto.co.CredentialCO;
+import com.yggdrasil.labs.app.auth.dto.query.ListCredentialsQuery;
 import com.yggdrasil.labs.domain.auth.model.AuthCredential;
 import com.yggdrasil.labs.domain.auth.repository.AuthCredentialRepository;
 

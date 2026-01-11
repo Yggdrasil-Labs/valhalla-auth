@@ -25,17 +25,17 @@ import com.yggdrasil.labs.adapter.web.request.LoginRequest;
 import com.yggdrasil.labs.adapter.web.request.LogoutRequest;
 import com.yggdrasil.labs.adapter.web.request.RefreshTokenRequest;
 import com.yggdrasil.labs.adapter.web.request.VerifyTokenRequest;
-import com.yggdrasil.labs.client.api.AuthClient;
-import com.yggdrasil.labs.client.dto.cmd.DeleteCredentialCmd;
-import com.yggdrasil.labs.client.dto.co.AuthUserCO;
-import com.yggdrasil.labs.client.dto.co.CredentialCO;
-import com.yggdrasil.labs.client.dto.co.LoginResultCO;
-import com.yggdrasil.labs.client.dto.co.TokenCO;
+import com.yggdrasil.labs.app.auth.dto.cmd.DeleteCredentialCmd;
+import com.yggdrasil.labs.app.auth.dto.co.AuthUserCO;
+import com.yggdrasil.labs.app.auth.dto.co.CredentialCO;
+import com.yggdrasil.labs.app.auth.dto.co.LoginResultCO;
+import com.yggdrasil.labs.app.auth.dto.co.TokenCO;
+import com.yggdrasil.labs.app.auth.service.AuthApplicationService;
 
 /**
  * 认证服务 REST 控制器
  *
- * <p>提供认证相关的 HTTP API 接口
+ * <p>提供认证相关的 HTTP API 接口，直接调用 App 层 ApplicationService
  *
  * @author YoungerYang-Y
  */
@@ -44,7 +44,7 @@ import com.yggdrasil.labs.client.dto.co.TokenCO;
 @Validated
 public class AuthController {
 
-    @Resource private AuthClient authClient;
+    @Resource private AuthApplicationService authApplicationService;
     @Resource private AuthWebConverter authWebConverter;
 
     /**
@@ -55,7 +55,7 @@ public class AuthController {
      */
     @PostMapping("/login")
     public SingleResponse<LoginResultCO> login(@Valid @RequestBody LoginRequest request) {
-        return authClient.login(authWebConverter.toLoginCmd(request));
+        return authApplicationService.login(authWebConverter.toLoginCmd(request));
     }
 
     /**
@@ -66,7 +66,7 @@ public class AuthController {
      */
     @PostMapping("/refresh")
     public SingleResponse<TokenCO> refreshToken(@Valid @RequestBody RefreshTokenRequest request) {
-        return authClient.refreshToken(authWebConverter.toRefreshTokenCmd(request));
+        return authApplicationService.refreshToken(authWebConverter.toRefreshTokenCmd(request));
     }
 
     /**
@@ -77,7 +77,7 @@ public class AuthController {
      */
     @PostMapping("/logout")
     public Response logout(@Valid @RequestBody LogoutRequest request) {
-        return authClient.logout(authWebConverter.toLogoutCmd(request));
+        return authApplicationService.logout(authWebConverter.toLogoutCmd(request));
     }
 
     /**
@@ -88,7 +88,7 @@ public class AuthController {
      */
     @PostMapping("/verify")
     public SingleResponse<AuthUserCO> verifyToken(@Valid @RequestBody VerifyTokenRequest request) {
-        return authClient.verifyToken(authWebConverter.toVerifyTokenCmd(request));
+        return authApplicationService.verifyToken(authWebConverter.toVerifyTokenCmd(request));
     }
 
     /**
@@ -99,7 +99,8 @@ public class AuthController {
      */
     @PostMapping("/credentials")
     public Response createCredential(@Valid @RequestBody CreateCredentialRequest request) {
-        return authClient.createCredential(authWebConverter.toCreateCredentialCmd(request));
+        return authApplicationService.createCredential(
+                authWebConverter.toCreateCredentialCmd(request));
     }
 
     /**
@@ -113,7 +114,7 @@ public class AuthController {
             @PathVariable @NotNull(message = "凭证ID不能为空") Long credentialId) {
         DeleteCredentialCmd cmd = new DeleteCredentialCmd();
         cmd.setCredentialId(credentialId);
-        return authClient.deleteCredential(cmd);
+        return authApplicationService.deleteCredential(cmd);
     }
 
     /**
@@ -127,7 +128,7 @@ public class AuthController {
             @PathVariable @NotNull(message = "用户ID不能为空") Long userId) {
         GetUserRequest request = new GetUserRequest();
         request.setUserId(userId);
-        return authClient.getUser(authWebConverter.toGetUserQuery(request));
+        return authApplicationService.getUser(authWebConverter.toGetUserQuery(request));
     }
 
     /**
@@ -141,7 +142,8 @@ public class AuthController {
             @PathVariable @NotNull(message = "用户ID不能为空") Long userId) {
         ListCredentialsRequest request = new ListCredentialsRequest();
         request.setUserId(userId);
-        return authClient.listCredentials(authWebConverter.toListCredentialsQuery(request));
+        return authApplicationService.listCredentials(
+                authWebConverter.toListCredentialsQuery(request));
     }
 
     /**
@@ -156,6 +158,6 @@ public class AuthController {
         // 根据 tokenId 的格式判断是 tokenHash 还是 jwtId
         // 这里简化处理，假设是 jwtId，实际可以根据格式判断
         request.setJwtId(tokenId);
-        return authClient.getToken(authWebConverter.toGetTokenQuery(request));
+        return authApplicationService.getToken(authWebConverter.toGetTokenQuery(request));
     }
 }

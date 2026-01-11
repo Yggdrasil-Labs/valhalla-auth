@@ -3,7 +3,7 @@ package com.yggdrasil.labs.app.auth.executor;
 import org.springframework.stereotype.Component;
 
 import com.alibaba.cola.dto.Response;
-import com.yggdrasil.labs.client.dto.cmd.LogoutCmd;
+import com.yggdrasil.labs.app.auth.dto.cmd.LogoutCmd;
 
 /**
  * 登出用例执行器
