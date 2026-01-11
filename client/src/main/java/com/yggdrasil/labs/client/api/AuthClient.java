@@ -5,6 +5,7 @@ import com.alibaba.cola.dto.Response;
 import com.alibaba.cola.dto.SingleResponse;
 import com.yggdrasil.labs.client.dto.cmd.CreateCredentialCmd;
 import com.yggdrasil.labs.client.dto.cmd.DeleteCredentialCmd;
+import com.yggdrasil.labs.client.dto.cmd.InitializeUserCmd;
 import com.yggdrasil.labs.client.dto.cmd.LoginCmd;
 import com.yggdrasil.labs.client.dto.cmd.LogoutCmd;
 import com.yggdrasil.labs.client.dto.cmd.RefreshTokenCmd;
@@ -13,6 +14,7 @@ import com.yggdrasil.labs.client.dto.co.AuthUserCO;
 import com.yggdrasil.labs.client.dto.co.CredentialCO;
 import com.yggdrasil.labs.client.dto.co.LoginResultCO;
 import com.yggdrasil.labs.client.dto.co.TokenCO;
+import com.yggdrasil.labs.client.dto.co.UserInitializationCO;
 import com.yggdrasil.labs.client.dto.query.GetTokenQuery;
 import com.yggdrasil.labs.client.dto.query.GetUserQuery;
 import com.yggdrasil.labs.client.dto.query.ListCredentialsQuery;
@@ -97,4 +99,22 @@ public interface AuthClient {
      * @return Token 信息
      */
     SingleResponse<TokenCO> getToken(GetTokenQuery query);
+
+    /**
+     * 初始化用户
+     *
+     * <p>用于初始化用户认证凭证和初始密码（如适用），支持多种用户创建场景：
+     *
+     * <ul>
+     *   <li>管理员创建：USERNAME + 密码
+     *   <li>用户密码注册：USERNAME/PHONE/EMAIL + 密码
+     *   <li>电话短信注册：PHONE + 验证状态 + 密码（可选）
+     *   <li>邮箱注册：EMAIL + 验证状态 + 密码（可选）
+     *   <li>第三方 OAuth 登录：WECHAT/GOOGLE/OTHER + provider（不需要密码）
+     * </ul>
+     *
+     * @param cmd 用户初始化命令
+     * @return 用户初始化结果（包含凭证信息和初始密码，如适用）
+     */
+    SingleResponse<UserInitializationCO> initializeUser(InitializeUserCmd cmd);
 }

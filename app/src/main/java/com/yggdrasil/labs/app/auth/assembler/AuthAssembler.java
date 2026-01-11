@@ -10,6 +10,7 @@ import com.yggdrasil.labs.app.auth.convert.AuthConverter;
 import com.yggdrasil.labs.client.dto.co.CredentialCO;
 import com.yggdrasil.labs.client.dto.co.LoginResultCO;
 import com.yggdrasil.labs.client.dto.co.TokenCO;
+import com.yggdrasil.labs.client.dto.co.UserInitializationCO;
 import com.yggdrasil.labs.client.dto.enums.TokenTypeEnum;
 import com.yggdrasil.labs.domain.auth.model.AuthCredential;
 import com.yggdrasil.labs.domain.auth.model.enums.CredentialType;
@@ -116,5 +117,37 @@ public class AuthAssembler {
                 break;
         }
         return credentialValue;
+    }
+
+    /** 组装 UserInitializationCO（用于密码场景） */
+    public UserInitializationCO toUserInitializationCO(
+            AuthCredential credential, String plainPassword) {
+        if (credential == null) {
+            return null;
+        }
+        UserInitializationCO co = new UserInitializationCO();
+        co.setCredentialId(credential.getCredentialId());
+        co.setCredentialType(authConverter.toClientCredentialType(credential.getCredentialType()));
+        co.setCredentialValue(credential.getCredentialValue());
+        co.setProvider(credential.getProvider());
+        co.setInitialPassword(plainPassword);
+        co.setForceChangePassword(true);
+        return co;
+    }
+
+    /** 组装 UserInitializationCO（用于 OAuth 场景） */
+    public UserInitializationCO toUserInitializationCO(AuthCredential credential) {
+        if (credential == null) {
+            return null;
+        }
+        UserInitializationCO co = new UserInitializationCO();
+        co.setCredentialId(credential.getCredentialId());
+        co.setCredentialType(authConverter.toClientCredentialType(credential.getCredentialType()));
+        co.setCredentialValue(credential.getCredentialValue());
+        co.setProvider(credential.getProvider());
+        // OAuth 场景不包含密码信息
+        co.setInitialPassword(null);
+        co.setForceChangePassword(null);
+        return co;
     }
 }

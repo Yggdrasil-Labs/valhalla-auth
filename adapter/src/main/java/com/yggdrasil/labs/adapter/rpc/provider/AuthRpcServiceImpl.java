@@ -5,8 +5,11 @@ import jakarta.annotation.Resource;
 import org.apache.dubbo.config.annotation.DubboService;
 
 import com.alibaba.cola.dto.Response;
+import com.alibaba.cola.dto.SingleResponse;
 import com.yggdrasil.labs.client.api.AuthClient;
 import com.yggdrasil.labs.client.dto.cmd.CreateCredentialCmd;
+import com.yggdrasil.labs.client.dto.cmd.InitializeUserCmd;
+import com.yggdrasil.labs.client.dto.co.UserInitializationCO;
 
 /**
  * 认证服务 RPC 实现
@@ -25,5 +28,10 @@ public class AuthRpcServiceImpl implements AuthRpcService {
     @Override
     public Response createCredential(CreateCredentialCmd cmd) {
         return authClient.createCredential(cmd);
+    }
+
+    @Override
+    public SingleResponse<UserInitializationCO> initializeUser(InitializeUserCmd cmd) {
+        return authClient.initializeUser(cmd);
     }
 }

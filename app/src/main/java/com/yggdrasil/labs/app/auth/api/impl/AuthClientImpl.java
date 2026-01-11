@@ -9,6 +9,7 @@ import com.alibaba.cola.dto.Response;
 import com.alibaba.cola.dto.SingleResponse;
 import com.yggdrasil.labs.app.auth.executor.CreateCredentialExecutor;
 import com.yggdrasil.labs.app.auth.executor.DeleteCredentialExecutor;
+import com.yggdrasil.labs.app.auth.executor.InitializeUserExecutor;
 import com.yggdrasil.labs.app.auth.executor.LoginExecutor;
 import com.yggdrasil.labs.app.auth.executor.LogoutExecutor;
 import com.yggdrasil.labs.app.auth.executor.RefreshTokenExecutor;
@@ -17,6 +18,7 @@ import com.yggdrasil.labs.app.auth.query.AuthQuery;
 import com.yggdrasil.labs.client.api.AuthClient;
 import com.yggdrasil.labs.client.dto.cmd.CreateCredentialCmd;
 import com.yggdrasil.labs.client.dto.cmd.DeleteCredentialCmd;
+import com.yggdrasil.labs.client.dto.cmd.InitializeUserCmd;
 import com.yggdrasil.labs.client.dto.cmd.LoginCmd;
 import com.yggdrasil.labs.client.dto.cmd.LogoutCmd;
 import com.yggdrasil.labs.client.dto.cmd.RefreshTokenCmd;
@@ -25,6 +27,7 @@ import com.yggdrasil.labs.client.dto.co.AuthUserCO;
 import com.yggdrasil.labs.client.dto.co.CredentialCO;
 import com.yggdrasil.labs.client.dto.co.LoginResultCO;
 import com.yggdrasil.labs.client.dto.co.TokenCO;
+import com.yggdrasil.labs.client.dto.co.UserInitializationCO;
 import com.yggdrasil.labs.client.dto.query.GetTokenQuery;
 import com.yggdrasil.labs.client.dto.query.GetUserQuery;
 import com.yggdrasil.labs.client.dto.query.ListCredentialsQuery;
@@ -45,6 +48,7 @@ public class AuthClientImpl implements AuthClient {
     @Resource private VerifyTokenExecutor verifyTokenExecutor;
     @Resource private CreateCredentialExecutor createCredentialExecutor;
     @Resource private DeleteCredentialExecutor deleteCredentialExecutor;
+    @Resource private InitializeUserExecutor initializeUserExecutor;
     @Resource private AuthQuery authQuery;
 
     @Override
@@ -94,5 +98,10 @@ public class AuthClientImpl implements AuthClient {
         // TODO: Token 信息现在存储在 Redis 中，需要从 Redis 查询
         // 实现从 Redis 查询 Token 信息的逻辑
         return SingleResponse.buildFailure("NOT_IMPLEMENTED", "Token 查询功能需要从 Redis 实现");
+    }
+
+    @Override
+    public SingleResponse<UserInitializationCO> initializeUser(InitializeUserCmd cmd) {
+        return initializeUserExecutor.execute(cmd);
     }
 }

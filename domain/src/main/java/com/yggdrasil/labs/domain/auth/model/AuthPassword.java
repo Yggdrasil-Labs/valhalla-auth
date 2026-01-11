@@ -64,6 +64,21 @@ public class AuthPassword {
         return password;
     }
 
+    /** 创建初始密码 */
+    public static AuthPassword createInitialPassword(Long userId, String passwordHash) {
+        AuthPassword password = new AuthPassword();
+        password.setUserId(userId);
+        password.setPasswordHash(passwordHash);
+        password.setPasswordAlgo(PasswordAlgo.BCRYPT);
+        password.setPasswordVersion(1);
+        password.setPasswordStatus(PasswordStatus.VALID);
+        password.setForceChange(true);
+        password.setChangedAt(LocalDateTime.now());
+        password.setCreateTime(LocalDateTime.now());
+        password.setUpdateTime(LocalDateTime.now());
+        return password;
+    }
+
     /** 修改密码 */
     public void changePassword(String newPasswordHash) {
         this.passwordHash = newPasswordHash;
