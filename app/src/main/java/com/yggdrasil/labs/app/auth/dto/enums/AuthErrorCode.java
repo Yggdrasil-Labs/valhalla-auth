@@ -43,7 +43,13 @@ public enum AuthErrorCode {
     REFRESH_TOKEN_NOT_IMPLEMENTED("REFRESH_TOKEN_NOT_IMPLEMENTED", "Token 刷新功能待实现"),
 
     /** Token 验证功能待实现 */
-    VERIFY_TOKEN_NOT_IMPLEMENTED("VERIFY_TOKEN_NOT_IMPLEMENTED", "Token 验证功能待实现");
+    VERIFY_TOKEN_NOT_IMPLEMENTED("VERIFY_TOKEN_NOT_IMPLEMENTED", "Token 验证功能待实现"),
+
+    /** 无效的凭证类型 */
+    INVALID_CREDENTIAL_TYPE("INVALID_CREDENTIAL_TYPE", "无效的凭证类型"),
+
+    /** OAuth 场景必须提供 provider */
+    PROVIDER_REQUIRED("PROVIDER_REQUIRED", "OAuth 场景必须提供 provider");
 
     private final String errCode;
     private final String errDesc;

@@ -45,7 +45,8 @@ public class InitializeUserExecutor {
         // 检查凭证类型转换是否成功
         if (credentialType == null) {
             return SingleResponse.<UserInitializationCO>buildFailure(
-                    "INVALID_CREDENTIAL_TYPE", "无效的凭证类型");
+                    AuthErrorCode.INVALID_CREDENTIAL_TYPE.getErrCode(),
+                    AuthErrorCode.INVALID_CREDENTIAL_TYPE.getErrDesc());
         }
 
         // 检查凭证是否已存在
@@ -78,7 +79,8 @@ public class InitializeUserExecutor {
             // OAuth 场景必须提供 provider
             if (cmd.getProvider() == null || cmd.getProvider().isBlank()) {
                 return SingleResponse.<UserInitializationCO>buildFailure(
-                        "PROVIDER_REQUIRED", "OAuth 场景必须提供 provider");
+                        AuthErrorCode.PROVIDER_REQUIRED.getErrCode(),
+                        AuthErrorCode.PROVIDER_REQUIRED.getErrDesc());
             }
         }
 
