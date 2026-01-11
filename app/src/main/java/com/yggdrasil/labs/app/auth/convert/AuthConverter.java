@@ -1,7 +1,6 @@
 package com.yggdrasil.labs.app.auth.convert;
 
 import org.mapstruct.Mapper;
-import org.mapstruct.factory.Mappers;
 
 import com.yggdrasil.labs.app.auth.dto.enums.CredentialTypeEnum;
 import com.yggdrasil.labs.app.auth.dto.enums.TokenTypeEnum;
@@ -19,8 +18,6 @@ import com.yggdrasil.labs.domain.auth.model.enums.UserStatus;
  */
 @Mapper(componentModel = "spring")
 public interface AuthConverter {
-
-    AuthConverter INSTANCE = Mappers.getMapper(AuthConverter.class);
 
     /** CredentialTypeEnum 转 CredentialType */
     default CredentialType toDomainCredentialType(CredentialTypeEnum credentialTypeEnum) {

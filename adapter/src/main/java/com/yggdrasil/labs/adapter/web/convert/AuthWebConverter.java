@@ -1,7 +1,6 @@
 package com.yggdrasil.labs.adapter.web.convert;
 
 import org.mapstruct.Mapper;
-import org.mapstruct.factory.Mappers;
 
 import com.yggdrasil.labs.adapter.web.request.CreateCredentialRequest;
 import com.yggdrasil.labs.adapter.web.request.GetTokenRequest;
@@ -29,8 +28,6 @@ import com.yggdrasil.labs.app.auth.dto.query.ListCredentialsQuery;
  */
 @Mapper(componentModel = "spring")
 public interface AuthWebConverter {
-
-    AuthWebConverter INSTANCE = Mappers.getMapper(AuthWebConverter.class);
 
     /** LoginRequest → LoginCmd */
     LoginCmd toLoginCmd(LoginRequest request);

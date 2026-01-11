@@ -34,12 +34,13 @@ public class InitializeUserExecutor {
     @Resource private PasswordGeneratorService passwordGeneratorService;
     @Resource private PasswordService passwordService;
     @Resource private AuthAssembler authAssembler;
+    @Resource private AuthConverter authConverter;
 
     /** 执行用户初始化用例 */
     @Transactional(rollbackFor = Exception.class)
     public SingleResponse<UserInitializationCO> execute(InitializeUserCmd cmd) {
         CredentialType credentialType =
-                AuthConverter.INSTANCE.toDomainCredentialType(cmd.getCredentialType());
+                authConverter.toDomainCredentialType(cmd.getCredentialType());
 
         // 检查凭证类型转换是否成功
         if (credentialType == null) {

@@ -28,13 +28,14 @@ public class LoginExecutor {
     @Resource private AuthCredentialRepository authCredentialRepository;
     @Resource private AuthPasswordRepository authPasswordRepository;
     @Resource private AuthAssembler authAssembler;
+    @Resource private AuthConverter authConverter;
 
     /** 执行登录用例 */
     @Transactional(rollbackFor = Exception.class)
     public SingleResponse<LoginResultCO> execute(LoginCmd cmd) {
         // 1. 根据凭证类型和凭证值查找凭证
         CredentialType credentialType =
-                AuthConverter.INSTANCE.toDomainCredentialType(cmd.getCredentialType());
+                authConverter.toDomainCredentialType(cmd.getCredentialType());
         AuthCredential credential =
                 authCredentialRepository.findByTypeAndValue(
                         credentialType, cmd.getCredentialValue());

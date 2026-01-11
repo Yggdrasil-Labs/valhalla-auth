@@ -22,12 +22,13 @@ import com.yggdrasil.labs.domain.auth.repository.AuthCredentialRepository;
 public class CreateCredentialExecutor {
 
     @Resource private AuthCredentialRepository authCredentialRepository;
+    @Resource private AuthConverter authConverter;
 
     /** 执行创建凭证用例 */
     @Transactional(rollbackFor = Exception.class)
     public Response execute(CreateCredentialCmd cmd) {
         CredentialType credentialType =
-                AuthConverter.INSTANCE.toDomainCredentialType(cmd.getCredentialType());
+                authConverter.toDomainCredentialType(cmd.getCredentialType());
 
         // 检查凭证是否已存在
         AuthCredential existing =
