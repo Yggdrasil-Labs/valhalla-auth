@@ -7,6 +7,8 @@ import org.apache.dubbo.config.annotation.DubboService;
 import com.alibaba.cola.dto.Response;
 import com.alibaba.cola.dto.SingleResponse;
 import com.yggdrasil.labs.adapter.rpc.convert.AuthRpcConverter;
+import com.yggdrasil.labs.app.auth.dto.cmd.CreateCredentialCmd;
+import com.yggdrasil.labs.app.auth.dto.cmd.InitializeUserCmd;
 import com.yggdrasil.labs.app.auth.dto.co.UserInitializationCO;
 import com.yggdrasil.labs.app.auth.service.AuthApplicationService;
 import com.yggdrasil.labs.client.api.AuthRpcFacade;
@@ -32,13 +34,13 @@ public class AuthRpcFacadeImpl implements AuthRpcFacade {
 
     @Override
     public Response createCredential(RpcCreateCredentialCmd cmd) {
-        var appCmd = authRpcConverter.toAppCmd(cmd);
+        CreateCredentialCmd appCmd = authRpcConverter.toAppCmd(cmd);
         return authApplicationService.createCredential(appCmd);
     }
 
     @Override
     public SingleResponse<RpcUserInitializationCO> initializeUser(RpcInitializeUserCmd cmd) {
-        var appCmd = authRpcConverter.toAppCmd(cmd);
+        InitializeUserCmd appCmd = authRpcConverter.toAppCmd(cmd);
         SingleResponse<UserInitializationCO> appResponse =
                 authApplicationService.initializeUser(appCmd);
 
