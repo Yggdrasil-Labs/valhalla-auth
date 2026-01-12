@@ -3,7 +3,6 @@ package com.yggdrasil.labs.infrastructure.persistence.converter;
 import org.mapstruct.Mapper;
 import org.mapstruct.Mapping;
 import org.mapstruct.Named;
-import org.mapstruct.factory.Mappers;
 
 import com.yggdrasil.labs.domain.auth.model.AuthPassword;
 import com.yggdrasil.labs.domain.auth.model.enums.PasswordAlgo;
@@ -19,8 +18,6 @@ import com.yggdrasil.labs.infrastructure.persistence.dataobject.AuthPasswordDO;
  */
 @Mapper(componentModel = "spring")
 public interface AuthPasswordConverter {
-
-    AuthPasswordConverter INSTANCE = Mappers.getMapper(AuthPasswordConverter.class);
 
     @Mapping(
             target = "passwordAlgo",

@@ -55,8 +55,6 @@
  * @Mapper(componentModel = "spring")
  * public interface CustomerConverter {
  *
- *     CustomerConverter INSTANCE = Mappers.getMapper(CustomerConverter.class);
- *
  *     Customer toEntity(CustomerDO customerDO);
  *
  *     CustomerDO toDO(Customer customer);

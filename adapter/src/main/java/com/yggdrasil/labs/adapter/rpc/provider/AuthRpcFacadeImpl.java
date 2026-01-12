@@ -26,24 +26,24 @@ import com.yggdrasil.labs.client.dto.co.RpcUserInitializationCO;
 @DubboService(version = "1.0.0", group = "auth", interfaceClass = AuthRpcFacade.class)
 public class AuthRpcFacadeImpl implements AuthRpcFacade {
 
-    private static final AuthRpcConverter CONVERTER = AuthRpcConverter.INSTANCE;
-
     @Resource private AuthApplicationService authApplicationService;
+
+    @Resource private AuthRpcConverter authRpcConverter;
 
     @Override
     public Response createCredential(RpcCreateCredentialCmd cmd) {
-        var appCmd = CONVERTER.toAppCmd(cmd);
+        var appCmd = authRpcConverter.toAppCmd(cmd);
         return authApplicationService.createCredential(appCmd);
     }
 
     @Override
     public SingleResponse<RpcUserInitializationCO> initializeUser(RpcInitializeUserCmd cmd) {
-        var appCmd = CONVERTER.toAppCmd(cmd);
+        var appCmd = authRpcConverter.toAppCmd(cmd);
         SingleResponse<UserInitializationCO> appResponse =
                 authApplicationService.initializeUser(appCmd);
 
         if (appResponse.isSuccess() && appResponse.getData() != null) {
-            RpcUserInitializationCO rpcCO = CONVERTER.toRpcCO(appResponse.getData());
+            RpcUserInitializationCO rpcCO = authRpcConverter.toRpcCO(appResponse.getData());
             return SingleResponse.of(rpcCO);
         }
 

@@ -1,5 +1,7 @@
 package com.yggdrasil.labs.adapter.rpc.convert;
 
+import org.springframework.stereotype.Component;
+
 import com.yggdrasil.labs.app.auth.dto.cmd.CreateCredentialCmd;
 import com.yggdrasil.labs.app.auth.dto.cmd.InitializeUserCmd;
 import com.yggdrasil.labs.app.auth.dto.co.UserInitializationCO;
@@ -16,11 +18,8 @@ import com.yggdrasil.labs.client.dto.enums.RpcCredentialTypeEnum;
  *
  * @author YoungerYang-Y
  */
-public final class AuthRpcConverter {
-
-    public static final AuthRpcConverter INSTANCE = new AuthRpcConverter();
-
-    private AuthRpcConverter() {}
+@Component
+public class AuthRpcConverter {
 
     /** RpcCreateCredentialCmd -> CreateCredentialCmd */
     public CreateCredentialCmd toAppCmd(RpcCreateCredentialCmd src) {

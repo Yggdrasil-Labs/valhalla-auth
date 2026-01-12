@@ -3,7 +3,6 @@ package com.yggdrasil.labs.infrastructure.persistence.converter;
 import org.mapstruct.Mapper;
 import org.mapstruct.Mapping;
 import org.mapstruct.Named;
-import org.mapstruct.factory.Mappers;
 
 import com.yggdrasil.labs.domain.auth.model.AuthMfaFactor;
 import com.yggdrasil.labs.domain.auth.model.enums.MfaFactorStatus;
@@ -19,8 +18,6 @@ import com.yggdrasil.labs.infrastructure.persistence.dataobject.AuthMfaFactorDO;
  */
 @Mapper(componentModel = "spring")
 public interface AuthMfaFactorConverter {
-
-    AuthMfaFactorConverter INSTANCE = Mappers.getMapper(AuthMfaFactorConverter.class);
 
     @Mapping(target = "mfaType", source = "mfaType", qualifiedByName = "mfaTypeToEnum")
     @Mapping(target = "status", source = "status", qualifiedByName = "mfaFactorStatusToEnum")

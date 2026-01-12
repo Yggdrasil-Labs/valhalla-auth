@@ -3,7 +3,6 @@ package com.yggdrasil.labs.infrastructure.persistence.converter;
 import org.mapstruct.Mapper;
 import org.mapstruct.Mapping;
 import org.mapstruct.Named;
-import org.mapstruct.factory.Mappers;
 
 import com.yggdrasil.labs.domain.auth.model.AuthCredential;
 import com.yggdrasil.labs.domain.auth.model.enums.CredentialType;
@@ -18,8 +17,6 @@ import com.yggdrasil.labs.infrastructure.persistence.dataobject.AuthCredentialDO
  */
 @Mapper(componentModel = "spring")
 public interface AuthCredentialConverter {
-
-    AuthCredentialConverter INSTANCE = Mappers.getMapper(AuthCredentialConverter.class);
 
     @Mapping(
             target = "credentialType",
