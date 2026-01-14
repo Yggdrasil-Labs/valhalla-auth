@@ -8,15 +8,15 @@
         <relativePath>../pom.xml</relativePath>
     </parent>
 
-    <artifactId>app</artifactId>
+    <artifactId>valhalla-auth-app</artifactId>
     <packaging>jar</packaging>
-    <name>app</name>
+    <name>valhalla-auth-app</name>
 
     <dependencies>
         <!-- 应用层依赖领域层（domain），不依赖 client 层 -->
         <dependency>
             <groupId>com.yggdrasil.labs</groupId>
-            <artifactId>domain</artifactId>
+            <artifactId>valhalla-auth-domain</artifactId>
         </dependency>
 
         <!-- COLA DTO 基础类 -->

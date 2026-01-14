@@ -8,9 +8,9 @@
         <relativePath>../pom.xml</relativePath>
     </parent>
 
-    <artifactId>client</artifactId>
+    <artifactId>valhalla-auth-client</artifactId>
     <packaging>jar</packaging>
-    <name>client</name>
+    <name>valhalla-auth-client</name>
 
     <dependencies>
         <!-- COLA DTO 基础类 -->

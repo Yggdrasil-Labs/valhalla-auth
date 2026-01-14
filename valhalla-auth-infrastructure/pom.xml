@@ -8,14 +8,14 @@
         <relativePath>../pom.xml</relativePath>
     </parent>
 
-    <artifactId>infrastructure</artifactId>
+    <artifactId>valhalla-auth-infrastructure</artifactId>
     <packaging>jar</packaging>
-    <name>infrastructure</name>
+    <name>valhalla-auth-infrastructure</name>
 
     <dependencies>
         <dependency>
             <groupId>com.yggdrasil.labs</groupId>
-            <artifactId>domain</artifactId>
+            <artifactId>valhalla-auth-domain</artifactId>
         </dependency>
 
         <!-- 工具集 -->

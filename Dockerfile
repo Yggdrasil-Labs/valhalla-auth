@@ -89,12 +89,12 @@ RUN mkdir -p /root/.m2 && \
 
 # 复制 pom 文件（利用 Docker 缓存层）
 COPY pom.xml .
-COPY start/pom.xml start/
-COPY client/pom.xml client/
-COPY adapter/pom.xml adapter/
-COPY app/pom.xml app/
-COPY domain/pom.xml domain/
-COPY infrastructure/pom.xml infrastructure/
+COPY valhalla-auth-start/pom.xml valhalla-auth-start/
+COPY valhalla-auth-client/pom.xml valhalla-auth-client/
+COPY valhalla-auth-adapter/pom.xml valhalla-auth-adapter/
+COPY valhalla-auth-app/pom.xml valhalla-auth-app/
+COPY valhalla-auth-domain/pom.xml valhalla-auth-domain/
+COPY valhalla-auth-infrastructure/pom.xml valhalla-auth-infrastructure/
 
 # 下载依赖（使用 BuildKit 缓存挂载，加速后续构建）
 RUN --mount=type=cache,target=/root/.m2/repository \
@@ -126,7 +126,7 @@ RUN addgroup -S app && adduser -S app -G app
 WORKDIR /app
 
 # 从构建阶段复制 JAR 文件（排除 original-*.jar，只复制 Spring Boot 打包的 fat JAR）
-COPY --from=builder /build/start/target/start-*.jar app.jar
+COPY --from=builder /build/valhalla-auth-start/target/valhalla-auth-start-*.jar app.jar
 
 # 设置文件权限
 RUN chown -R app:app /app

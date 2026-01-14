@@ -31,12 +31,12 @@
     </properties>
 
     <modules>
-        <module>client</module>
-        <module>adapter</module>
-        <module>app</module>
-        <module>domain</module>
-        <module>infrastructure</module>
-        <module>start</module>
+        <module>valhalla-auth-client</module>
+        <module>valhalla-auth-adapter</module>
+        <module>valhalla-auth-app</module>
+        <module>valhalla-auth-domain</module>
+        <module>valhalla-auth-infrastructure</module>
+        <module>valhalla-auth-start</module>
     </modules>
 
     <dependencies>
@@ -86,27 +86,27 @@
             <!--Project modules-->
             <dependency>
                 <groupId>com.yggdrasil.labs</groupId>
-                <artifactId>adapter</artifactId>
+                <artifactId>valhalla-auth-adapter</artifactId>
                 <version>${revision}</version>
             </dependency>
             <dependency>
                 <groupId>com.yggdrasil.labs</groupId>
-                <artifactId>client</artifactId>
+                <artifactId>valhalla-auth-client</artifactId>
                 <version>${revision}</version>
             </dependency>
             <dependency>
                 <groupId>com.yggdrasil.labs</groupId>
-                <artifactId>app</artifactId>
+                <artifactId>valhalla-auth-app</artifactId>
                 <version>${revision}</version>
             </dependency>
             <dependency>
                 <groupId>com.yggdrasil.labs</groupId>
-                <artifactId>domain</artifactId>
+                <artifactId>valhalla-auth-domain</artifactId>
                 <version>${revision}</version>
             </dependency>
             <dependency>
                 <groupId>com.yggdrasil.labs</groupId>
-                <artifactId>infrastructure</artifactId>
+                <artifactId>valhalla-auth-infrastructure</artifactId>
                 <version>${revision}</version>
             </dependency>
             <!--Project modules End-->

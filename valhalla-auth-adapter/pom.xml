@@ -8,20 +8,20 @@
         <relativePath>../pom.xml</relativePath>
     </parent>
 
-    <artifactId>adapter</artifactId>
+    <artifactId>valhalla-auth-adapter</artifactId>
     <packaging>jar</packaging>
-    <name>adapter</name>
+    <name>valhalla-auth-adapter</name>
 
     <dependencies>
         <!-- 适配层依赖应用层（app），用于 Controller 调用 ApplicationService -->
         <dependency>
             <groupId>com.yggdrasil.labs</groupId>
-            <artifactId>app</artifactId>
+            <artifactId>valhalla-auth-app</artifactId>
         </dependency>
         <!-- 适配层依赖 client 层，用于实现 Dubbo RPC 接口 -->
         <dependency>
             <groupId>com.yggdrasil.labs</groupId>
-            <artifactId>client</artifactId>
+            <artifactId>valhalla-auth-client</artifactId>
         </dependency>
 
         <!-- DTO 转换：使用 MapStruct 进行 Web Request ↔ Client Cmd 转换 -->

@@ -8,9 +8,9 @@
         <relativePath>../pom.xml</relativePath>
     </parent>
 
-    <artifactId>domain</artifactId>
+    <artifactId>valhalla-auth-domain</artifactId>
     <packaging>jar</packaging>
-    <name>domain</name>
+    <name>valhalla-auth-domain</name>
 
     <dependencies>
         <!-- Domain 层只依赖自身与 COLA 组件，不依赖 client/app/infra -->
