@@ -1,5 +1,18 @@
 # Changelog
 
+## [1.1.0](https://github.com/Yggdrasil-Labs/valhalla-auth/compare/v1.0.0...v1.1.0) (2026-01-14)
+
+
+### ✨ Features
+
+* 模块与目录重名命 ([1e1cb25](https://github.com/Yggdrasil-Labs/valhalla-auth/commit/1e1cb250bb71ee15ef66ded5fc1757fff2daefa9))
+
+
+### 🔧 Miscellaneous Chores
+
+* bump version to 1.0.1-SNAPSHOT for next development cycle ([bf66945](https://github.com/Yggdrasil-Labs/valhalla-auth/commit/bf669454dd4730b7cd4e33538f1ce44fe51e7dfb))
+* 避免changelog错误 ([0ec8eaf](https://github.com/Yggdrasil-Labs/valhalla-auth/commit/0ec8eaf997bd071116ed800a07c3eaebd08323ef))
+
 ## 1.0.0 (2026-01-14)
 
 
