@@ -267,14 +267,14 @@ jobs:
           ./mvnw -B -U -Drevision=$VERSION \
             -Dmaven.deploy.skip=false \
             -DaltDeploymentRepository=github::default::https://maven.pkg.github.com/$REPOSITORY \
-            -pl client -am deploy -DskipTests
+            -pl valhalla-auth-client -am deploy -DskipTests
           
           echo "✅ Successfully deployed client module to GitHub Package"
           echo "📦 Package URL: https://github.com/$REPOSITORY/packages"
           echo "📋 Maven dependency:"
           echo "   <dependency>"
           echo "     <groupId>com.yggdrasil.labs</groupId>"
-          echo "     <artifactId>client</artifactId>"
+          echo "     <artifactId>valhalla-auth-client</artifactId>"
           echo "     <version>$VERSION</version>"
           echo "   </dependency>"
         env:
