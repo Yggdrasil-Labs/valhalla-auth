@@ -2,7 +2,7 @@
 <project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
     <modelVersion>4.0.0</modelVersion>
     <parent>
-        <groupId>com.yggdrasil.labs</groupId>
+        <groupId>io.github.yggdrasil-labs</groupId>
         <artifactId>valhalla-auth</artifactId>
         <version>${revision}</version>
         <relativePath>../pom.xml</relativePath>
@@ -15,7 +15,7 @@
     <dependencies>
         <!-- 应用层依赖领域层（domain），不依赖 client 层 -->
         <dependency>
-            <groupId>com.yggdrasil.labs</groupId>
+            <groupId>io.github.yggdrasil-labs</groupId>
             <artifactId>valhalla-auth-domain</artifactId>
         </dependency>
 

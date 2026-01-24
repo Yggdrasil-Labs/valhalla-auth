@@ -273,7 +273,7 @@ jobs:
           echo "📦 Package URL: https://github.com/$REPOSITORY/packages"
           echo "📋 Maven dependency:"
           echo "   <dependency>"
-          echo "     <groupId>com.yggdrasil.labs</groupId>"
+          echo "     <groupId>io.github.yggdrasil-labs</groupId>"
           echo "     <artifactId>valhalla-auth-client</artifactId>"
           echo "     <version>$VERSION</version>"
           echo "   </dependency>"

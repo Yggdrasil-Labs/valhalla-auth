@@ -22,11 +22,11 @@ updates:
     # 忽略主要版本更新（破坏性变更）
     ignore:
       # Mimir Boot 框架主要版本更新需要手动处理
-      - dependency-name: "com.yggdrasil.labs:mimir-boot-parent"
+      - dependency-name: "io.github.yggdrasil-labs:mimir-boot-parent"
         update-types: ["version-update:semver-major"]
-      - dependency-name: "com.yggdrasil.labs:mimir-boot-bom"
+      - dependency-name: "io.github.yggdrasil-labs:mimir-boot-bom"
         update-types: ["version-update:semver-major"]
-      - dependency-name: "com.yggdrasil.labs:mimir-boot-starter-*"
+      - dependency-name: "io.github.yggdrasil-labs:mimir-boot-starter-*"
         update-types: ["version-update:semver-major"]
       # COLA 架构组件主要版本更新
       - dependency-name: "com.alibaba.cola:cola-components-bom"
@@ -49,7 +49,7 @@ updates:
       # Mimir Boot 框架（谨慎更新，仅允许补丁版本）
       mimir-boot:
         patterns:
-          - "com.yggdrasil.labs:mimir-boot-*"
+          - "io.github.yggdrasil-labs:mimir-boot-*"
         update-types: ["patch"]
       # COLA 架构组件（谨慎更新，仅允许补丁版本）
       cola:

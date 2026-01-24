@@ -3,12 +3,13 @@
     <modelVersion>4.0.0</modelVersion>
 
     <parent>
-        <groupId>com.yggdrasil.labs</groupId>
+        <groupId>io.github.yggdrasil-labs</groupId>
         <artifactId>mimir-boot-parent</artifactId>
-        <version>1.6.0</version>
+        <version>2.0.0</version>
         <relativePath/>
     </parent>
 
+    <groupId>io.github.yggdrasil-labs</groupId>
     <artifactId>valhalla-auth</artifactId>
     <version>${revision}</version>
     <packaging>pom</packaging>
@@ -26,7 +27,7 @@
         <project.reporting.outputEncoding>UTF-8</project.reporting.outputEncoding>
         <maven.deploy.skip>true</maven.deploy.skip>
 
-        <mimir-boot.version>1.6.0</mimir-boot.version>
+        <mimir-boot.version>2.0.0</mimir-boot.version>
         <cola.components.version>5.0.0</cola.components.version>
     </properties>
 
@@ -85,34 +86,34 @@
         <dependencies>
             <!--Project modules-->
             <dependency>
-                <groupId>com.yggdrasil.labs</groupId>
+                <groupId>io.github.yggdrasil-labs</groupId>
                 <artifactId>valhalla-auth-adapter</artifactId>
                 <version>${revision}</version>
             </dependency>
             <dependency>
-                <groupId>com.yggdrasil.labs</groupId>
+                <groupId>io.github.yggdrasil-labs</groupId>
                 <artifactId>valhalla-auth-client</artifactId>
                 <version>${revision}</version>
             </dependency>
             <dependency>
-                <groupId>com.yggdrasil.labs</groupId>
+                <groupId>io.github.yggdrasil-labs</groupId>
                 <artifactId>valhalla-auth-app</artifactId>
                 <version>${revision}</version>
             </dependency>
             <dependency>
-                <groupId>com.yggdrasil.labs</groupId>
+                <groupId>io.github.yggdrasil-labs</groupId>
                 <artifactId>valhalla-auth-domain</artifactId>
                 <version>${revision}</version>
             </dependency>
             <dependency>
-                <groupId>com.yggdrasil.labs</groupId>
+                <groupId>io.github.yggdrasil-labs</groupId>
                 <artifactId>valhalla-auth-infrastructure</artifactId>
                 <version>${revision}</version>
             </dependency>
             <!--Project modules End-->
 
             <dependency>
-                <groupId>com.yggdrasil.labs</groupId>
+                <groupId>io.github.yggdrasil-labs</groupId>
                 <artifactId>mimir-boot-bom</artifactId>
                 <version>${mimir-boot.version}</version>
                 <type>pom</type>
