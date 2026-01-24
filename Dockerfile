@@ -117,8 +117,26 @@ RUN --mount=type=cache,target=/root/.m2/repository \
 # -------------------- 运行阶段 --------------------
 FROM eclipse-temurin:17-jre-alpine
 
+# OCI 标准元数据标签
+# 构建时通过 --build-arg 传入版本信息
+ARG VERSION=latest
+ARG REVISION=unknown
+ARG BUILD_DATE=unknown
+
 LABEL maintainer="YoungerYang-Y"
 LABEL description="Valhalla Auth Service"
+
+# OCI Image Spec Labels (https://github.com/opencontainers/image-spec/blob/main/annotations.md)
+LABEL org.opencontainers.image.title="valhalla-auth"
+LABEL org.opencontainers.image.description="Valhalla Auth Service - 英灵殿认证服务"
+LABEL org.opencontainers.image.version="${VERSION}"
+LABEL org.opencontainers.image.revision="${REVISION}"
+LABEL org.opencontainers.image.created="${BUILD_DATE}"
+LABEL org.opencontainers.image.source="https://github.com/Yggdrasil-Labs/valhalla-auth"
+LABEL org.opencontainers.image.url="https://github.com/Yggdrasil-Labs/valhalla-auth"
+LABEL org.opencontainers.image.documentation="https://github.com/Yggdrasil-Labs/valhalla-auth#readme"
+LABEL org.opencontainers.image.vendor="Yggdrasil-Labs"
+LABEL org.opencontainers.image.licenses="MIT"
 
 # 创建非 root 用户
 RUN addgroup -S app && adduser -S app -G app

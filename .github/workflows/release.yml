@@ -280,6 +280,90 @@ jobs:
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 
+  # ==================== Docker 镜像发布 ====================
+  publish-docker-image:
+    runs-on: ubuntu-latest
+    needs: [ publish-client-package ]
+    permissions:
+      contents: read
+      packages: write
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@8e8c483db84b4bee98b60c0593521ed34d9990e8
+        with:
+          ref: ${{ github.ref }}
+          fetch-depth: 0
+
+      - name: Get version from tag
+        id: get_version
+        run: |
+          TAG_NAME=${GITHUB_REF#refs/tags/}
+          VERSION=${TAG_NAME#v}
+          echo "Tag: $TAG_NAME"
+          echo "Version: $VERSION"
+          echo "tag=$TAG_NAME" >> $GITHUB_OUTPUT
+          echo "version=$VERSION" >> $GITHUB_OUTPUT
+
+      - name: Set up QEMU
+        uses: docker/setup-qemu-action@29109295f81e9208d7d86ff1c6c12d2833863392
+
+      - name: Set up Docker Buildx
+        uses: docker/setup-buildx-action@b5ca514318bd6ebac0fb2aedd5d36ec1b5c232a2
+
+      - name: Login to GitHub Container Registry
+        uses: docker/login-action@74a5d142397b4f367a81961eba4e8cd7edddf772
+        with:
+          registry: ghcr.io
+          username: ${{ github.actor }}
+          password: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: Extract metadata for Docker
+        id: meta
+        uses: docker/metadata-action@902fa8ec7d6ecbf8d84d538b9b233a880e428804
+        with:
+          images: ghcr.io/${{ github.repository }}
+          tags: |
+            type=semver,pattern={{version}},value=${{ steps.get_version.outputs.tag }}
+            type=raw,value=latest
+
+      - name: Build and push Docker image
+        uses: docker/build-push-action@263435318d21b8e681c14492fe198d362a7d2c83
+        with:
+          context: .
+          platforms: linux/amd64,linux/arm64
+          push: true
+          tags: ${{ steps.meta.outputs.tags }}
+          labels: ${{ steps.meta.outputs.labels }}
+          build-args: |
+            GITHUB_ACTOR=${{ github.actor }}
+            GITHUB_TOKEN=${{ secrets.GITHUB_TOKEN }}
+            VERSION=${{ steps.get_version.outputs.version }}
+            REVISION=${{ github.sha }}
+            BUILD_DATE=${{ github.event.head_commit.timestamp }}
+          cache-from: type=gha
+          cache-to: type=gha,mode=max
+
+      - name: Output image info
+        run: |
+          VERSION="${{ steps.get_version.outputs.version }}"
+          echo "============================================"
+          echo "🐳 Docker 镜像发布成功！"
+          echo "============================================"
+          echo ""
+          echo "📦 镜像地址:"
+          echo "   ghcr.io/${{ github.repository }}:$VERSION"
+          echo "   ghcr.io/${{ github.repository }}:latest"
+          echo ""
+          echo "🚀 拉取命令:"
+          echo "   docker pull ghcr.io/${{ github.repository }}:$VERSION"
+          echo ""
+          echo "▶️  运行命令:"
+          echo "   docker run -d --name valhalla-auth \\"
+          echo "     -p 8081:8081 -p 20880:20880 \\"
+          echo "     -e SPRING_PROFILES_ACTIVE=dev \\"
+          echo "     ghcr.io/${{ github.repository }}:$VERSION"
+
+  # ==================== GitHub Release 创建 ====================
   create-github-release:
     runs-on: ubuntu-latest
     needs: [ build-release ]

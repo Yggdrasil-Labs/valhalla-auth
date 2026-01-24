@@ -28,6 +28,62 @@ Valhalla（英灵殿）是 Vanaheim 平台的**认证服务**，专注于用户�
 
 - **认证**: JWT + Spring Security
 
+## Docker 镜像
+
+### 拉取镜像
+
+```bash
+# 拉取最新版本
+docker pull ghcr.io/yggdrasil-labs/valhalla-auth:latest
+
+# 拉取指定版本
+docker pull ghcr.io/yggdrasil-labs/valhalla-auth:1.0.0
+```
+
+### 支持的 Tag
+
+| Tag | 说明 |
+|-----|------|
+| `latest` | 最新稳定版本 |
+| `x.y.z` | 语义化版本号（如 `1.0.0`） |
+
+### 运行容器
+
+```bash
+# 基本运行
+docker run -d --name valhalla-auth \
+  -p 8081:8081 \
+  -p 20880:20880 \
+  -e SPRING_PROFILES_ACTIVE=dev \
+  ghcr.io/yggdrasil-labs/valhalla-auth:latest
+
+# 带环境变量配置
+docker run -d --name valhalla-auth \
+  -p 8081:8081 \
+  -p 20880:20880 \
+  -e SPRING_PROFILES_ACTIVE=prod \
+  -e MYSQL_HOST=mysql.example.com \
+  -e REDIS_HOST=redis.example.com \
+  -e NACOS_SERVER_ADDR=nacos.example.com:8848 \
+  ghcr.io/yggdrasil-labs/valhalla-auth:latest
+```
+
+### 本地构建
+
+```bash
+# Linux/Mac
+export GITHUB_ACTOR=your-username
+export GITHUB_TOKEN=your-token
+./build.sh
+
+# Windows PowerShell
+$env:GITHUB_ACTOR="your-username"
+$env:GITHUB_TOKEN="your-token"
+./build.ps1
+```
+
+> **注意**: 本地构建仅用于开发测试，官方镜像由 CI 自动发布。
+
 ## 核心功能
 
 认证服务专注于**身份认证（Authentication）**，不涉及权限验证（Authorization）：
