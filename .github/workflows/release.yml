@@ -239,6 +239,13 @@ jobs:
                 <username>${env.GITHUB_ACTOR}</username>
                 <password>${env.GITHUB_TOKEN}</password>
               </server>
+              <!-- 占位符配置：防止 central-publishing-maven-plugin 初始化时报错 -->
+              <!-- 插件会在检查 skip 配置前尝试读取 central server，需要提供一个占位符 -->
+              <server>
+                <id>central</id>
+                <username>placeholder</username>
+                <password>placeholder</password>
+              </server>
             </servers>
           </settings>
           EOF
