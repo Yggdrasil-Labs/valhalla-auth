@@ -264,8 +264,10 @@ jobs:
           # -pl 指定要部署的模块，-am 表示同时构建依赖的模块
           # -DaltDeploymentRepository 指定部署仓库，格式：id::layout::url
           # -Dmaven.deploy.skip=false 覆盖根 pom.xml 中的 skip 设置
+          # -Dcentral-publishing.skip=true 跳过 Maven Central 发布（仅发布到 GitHub Packages）
           ./mvnw -B -U -Drevision=$VERSION \
             -Dmaven.deploy.skip=false \
+            -Dcentral-publishing.skip=true \
             -DaltDeploymentRepository=github::default::https://maven.pkg.github.com/$REPOSITORY \
             -pl valhalla-auth-client -am deploy -DskipTests
           
