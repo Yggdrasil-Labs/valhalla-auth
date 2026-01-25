@@ -1,5 +1,27 @@
 # Changelog
 
+## [1.2.0](https://github.com/Yggdrasil-Labs/valhalla-auth/compare/v1.1.0...v1.2.0) (2026-01-25)
+
+
+### ✨ Features
+
+* 更新构建脚本以支持版本信息和本地构建说明 ([2302759](https://github.com/Yggdrasil-Labs/valhalla-auth/commit/2302759f9ecf4f9c695dbfa5ba256b72df257c90))
+
+
+### 👷 Continuous Integration
+
+* **deps:** bump actions/checkout from 6.0.1 to 6.0.2 ([e61bae2](https://github.com/Yggdrasil-Labs/valhalla-auth/commit/e61bae24bb212f4a926d3272c27184fef57f9fc3))
+* **release:** 跳过发布到maven central ([fea20c3](https://github.com/Yggdrasil-Labs/valhalla-auth/commit/fea20c33fb4af668773a217562680ea97a60d2aa))
+
+
+### 🔧 Miscellaneous Chores
+
+* bump version to 1.1.1-SNAPSHOT for next development cycle ([e6b84c0](https://github.com/Yggdrasil-Labs/valhalla-auth/commit/e6b84c000db90fc104082b57e62e74736bfbb37b))
+* **deps-dev:** bump com.diffplug.spotless:spotless-maven-plugin ([173200c](https://github.com/Yggdrasil-Labs/valhalla-auth/commit/173200cc710e8e2ec062773a9704888eb9a9437d))
+* 升级mimir-boot 到 2.0.0 ([131552c](https://github.com/Yggdrasil-Labs/valhalla-auth/commit/131552cdf172a2fe41992d3e63870d76bf54e0a9))
+* 将依赖项更新到版本2.0.2 ([b1b7bd5](https://github.com/Yggdrasil-Labs/valhalla-auth/commit/b1b7bd5e7084fa7ac7e188b4b8c2449c7d278373))
+* 更新构建脚本以优化构建流程和文档 ([a87eaf2](https://github.com/Yggdrasil-Labs/valhalla-auth/commit/a87eaf21a64e009c488e20167553d99505a5d872))
+
 ## [1.1.0](https://github.com/Yggdrasil-Labs/valhalla-auth/compare/v1.0.0...v1.1.0) (2026-01-15)
 
 
