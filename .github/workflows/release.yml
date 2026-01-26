@@ -280,12 +280,26 @@ jobs:
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 
+      - name: Build and package client module
+        run: |
+          VERSION="${{ needs.prepare.outputs.version }}"
+          echo "Building client module with version: $VERSION"
+          ./mvnw -B -U -Drevision=$VERSION \
+            -pl valhalla-auth-client \
+            clean package -DskipTests
+          
+          echo "Verifying built jar:"
+          ls -lh valhalla-auth-client/target/*.jar | grep -v original || true
+
       - name: Flatten POM files before deploy
         run: |
           VERSION="${{ needs.prepare.outputs.version }}"
           echo "Executing flatten:flatten to replace \${revision} variables with version: $VERSION"
-          ./mvnw -B -U -Drevision=$VERSION flatten:flatten
-          echo "Flatten completed."
+          ./mvnw -B -U -Drevision=$VERSION \
+            -pl valhalla-auth-client \
+            flatten:flatten
+          echo "Flatten completed. Checking flattened POM:"
+          cat valhalla-auth-client/.flattened-pom.xml | head -30
 
       - name: Deploy client module to GitHub Package
         run: |
@@ -296,7 +310,7 @@ jobs:
           echo "Repository: $REPOSITORY"
           
           # 使用 Maven deploy 命令，只部署 client 模块
-          # -pl 指定要部署的模块，-am 表示同时构建依赖的模块
+          # -pl 指定要部署的模块
           # -DaltDeploymentRepository 指定部署仓库，格式：id::layout::url
           # -Dmaven.deploy.skip=false 覆盖根 pom.xml 中的 skip 设置
           # -Dcentral.skip=true 确保不发布到 Maven Central（双重保险）
@@ -304,7 +318,8 @@ jobs:
             -Dmaven.deploy.skip=false \
             -Dcentral.skip=true \
             -DaltDeploymentRepository=github::default::https://maven.pkg.github.com/$REPOSITORY \
-            -pl valhalla-auth-client deploy -DskipTests
+            -pl valhalla-auth-client \
+            deploy -DskipTests
           
           echo "✅ Successfully deployed client module to GitHub Package"
           echo "📦 Package URL: https://github.com/$REPOSITORY/packages"
