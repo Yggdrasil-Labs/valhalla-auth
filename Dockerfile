@@ -6,7 +6,8 @@
 # ============================================
 
 # -------------------- 构建阶段 --------------------
-FROM maven:3.9-eclipse-temurin-17-alpine AS builder
+# 仅在构建机架构上执行 Maven 构建（Jar 与平台无关，可用于多架构镜像）
+FROM --platform=$BUILDPLATFORM maven:3.9-eclipse-temurin-17 AS builder
 
 # GitHub Packages 认证
 ARG GITHUB_ACTOR
@@ -115,7 +116,8 @@ RUN --mount=type=cache,target=/root/.m2/repository \
     mvn clean package -DskipTests -Pci
 
 # -------------------- 运行阶段 --------------------
-FROM eclipse-temurin:17-jre-alpine
+# Alpine 变体在 arm64 上偶发缺失 manifest，改用稳定的多架构 Jammy 变体
+FROM eclipse-temurin:17-jre-jammy
 
 # OCI 标准元数据标签
 # 构建时通过 --build-arg 传入版本信息
@@ -138,8 +140,14 @@ LABEL org.opencontainers.image.documentation="https://github.com/Yggdrasil-Labs/
 LABEL org.opencontainers.image.vendor="Yggdrasil-Labs"
 LABEL org.opencontainers.image.licenses="MIT"
 
+# 运行时依赖（用于 HEALTHCHECK）
+RUN apt-get update && \
+    apt-get install -y --no-install-recommends curl ca-certificates && \
+    rm -rf /var/lib/apt/lists/*
+
 # 创建非 root 用户
-RUN addgroup -S app && adduser -S app -G app
+RUN groupadd --system app && \
+    useradd --system --gid app --home-dir /app --shell /usr/sbin/nologin app
 
 WORKDIR /app
 
@@ -159,7 +167,7 @@ ENV JAVA_OPTS="-Xms128m -Xmx256m -XX:+UseSerialGC -XX:MaxRAM=512m"
 
 # 健康检查
 HEALTHCHECK --interval=30s --timeout=10s --start-period=60s --retries=3 \
-    CMD wget -q --spider http://localhost:8081/actuator/health || exit 1
+    CMD curl -fsS http://localhost:8081/actuator/health >/dev/null || exit 1
 
 # 启动命令
 ENTRYPOINT ["sh", "-c", "java $JAVA_OPTS -jar app.jar"]
