@@ -239,8 +239,8 @@ jobs:
                 <username>${env.GITHUB_ACTOR}</username>
                 <password>${env.GITHUB_TOKEN}</password>
               </server>
-              <!-- 占位符配置：防止 central-publishing-maven-plugin 初始化时报错 -->
-              <!-- 插件会在检查 skip 配置前尝试读取 central server，需要提供一个占位符 -->
+              <!-- 占位符配置：mimir-boot-parent 的 central-publishing-maven-plugin (extensions=true)
+                   在初始化时需要读取此 server 配置，即使我们在 pom.xml 中设置了 skip=true -->
               <server>
                 <id>central</id>
                 <username>placeholder</username>
@@ -271,10 +271,10 @@ jobs:
           # -pl 指定要部署的模块，-am 表示同时构建依赖的模块
           # -DaltDeploymentRepository 指定部署仓库，格式：id::layout::url
           # -Dmaven.deploy.skip=false 覆盖根 pom.xml 中的 skip 设置
-          # -Dcentral-publishing.skip=true 跳过 Maven Central 发布（仅发布到 GitHub Packages）
+          # -Dcentral.skip=true 确保不发布到 Maven Central（双重保险）
           ./mvnw -B -U -Drevision=$VERSION \
             -Dmaven.deploy.skip=false \
-            -Dcentral-publishing.skip=true \
+            -Dcentral.skip=true \
             -DaltDeploymentRepository=github::default::https://maven.pkg.github.com/$REPOSITORY \
             -pl valhalla-auth-client -am deploy -DskipTests
           
