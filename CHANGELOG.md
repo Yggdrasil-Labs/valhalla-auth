@@ -1,5 +1,17 @@
 # Changelog
 
+## [1.2.1](https://github.com/Yggdrasil-Labs/valhalla-auth/compare/v1.2.0...v1.2.1) (2026-01-26)
+
+
+### 👷 Continuous Integration
+
+* **release:** 重构 GitHub Actions 工作流程以改进条件检查和 settings.xml 生成 ([0c39d33](https://github.com/Yggdrasil-Labs/valhalla-auth/commit/0c39d33a8b334e02e9301ef91d39c26b76170be0))
+
+
+### 🔧 Miscellaneous Chores
+
+* bump version to 1.2.1-SNAPSHOT for next development cycle ([9a96102](https://github.com/Yggdrasil-Labs/valhalla-auth/commit/9a96102f7c7e6336dd0694fdff1be33bb32b9772))
+
 ## [1.2.0](https://github.com/Yggdrasil-Labs/valhalla-auth/compare/v1.1.0...v1.2.0) (2026-01-26)
 
 
