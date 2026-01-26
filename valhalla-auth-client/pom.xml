@@ -12,6 +12,11 @@
     <packaging>jar</packaging>
     <name>valhalla-auth-client</name>
 
+    <properties>
+        <!-- 允许此模块发布到 GitHub Packages -->
+        <maven.deploy.skip>false</maven.deploy.skip>
+    </properties>
+
     <dependencies>
         <!-- COLA DTO 基础类 -->
         <dependency>

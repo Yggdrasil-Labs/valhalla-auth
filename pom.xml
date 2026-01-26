@@ -82,6 +82,15 @@
         </repository>
     </repositories>
 
+    <!-- 发布到 GitHub Packages（覆盖 parent 的 Maven Central 配置） -->
+    <distributionManagement>
+        <repository>
+            <id>github</id>
+            <name>GitHub Packages</name>
+            <url>https://maven.pkg.github.com/Yggdrasil-Labs/valhalla-auth</url>
+        </repository>
+    </distributionManagement>
+
     <dependencyManagement>
         <dependencies>
             <!--Project modules-->

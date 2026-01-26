@@ -229,6 +229,9 @@ jobs:
           java-version: ${{ env.JAVA_VERSION }}
           distribution: 'temurin'
           cache: 'maven'
+          server-id: github
+          server-username: GITHUB_ACTOR
+          server-password: GITHUB_TOKEN
 
       - name: Make Maven Wrapper executable
         run: |
@@ -240,45 +243,6 @@ jobs:
             echo "Error: mvnw not found"
             exit 1
           fi
-
-      - name: Update version in pom.xml for release
-        run: |
-          VERSION="${{ needs.prepare.outputs.version }}"
-          
-          if [ -z "$VERSION" ]; then
-            echo "Error: Version is empty"
-            exit 1
-          fi
-          
-          echo "Updating pom.xml revision to: $VERSION"
-          sed -i "s|<revision>[^<]*</revision>|<revision>$VERSION</revision>|g" pom.xml
-          
-          echo "Updated pom.xml:"
-          grep -A 2 -B 2 "<revision>" pom.xml
-
-      - name: Configure Maven for GitHub Packages
-        run: |
-          mkdir -p ~/.m2
-          printf '%s\n' \
-            '<?xml version="1.0" encoding="UTF-8"?>' \
-            '<settings>' \
-            '  <servers>' \
-            '    <server>' \
-            '      <id>github</id>' \
-            "      <username>${GITHUB_ACTOR}</username>" \
-            "      <password>${GITHUB_TOKEN}</password>" \
-            '    </server>' \
-            '    <server>' \
-            '      <id>central</id>' \
-            '      <username>placeholder</username>' \
-            '      <password>placeholder</password>' \
-            '    </server>' \
-            '  </servers>' \
-            '</settings>' > ~/.m2/settings.xml
-          echo "Generated settings.xml:"
-          cat ~/.m2/settings.xml
-        env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 
       - name: Build and package client module
         run: |
@@ -304,31 +268,17 @@ jobs:
       - name: Deploy client module to GitHub Package
         run: |
           VERSION="${{ needs.prepare.outputs.version }}"
-          REPOSITORY="${{ github.repository }}"
           
-          echo "Deploying client module version $VERSION to GitHub Package..."
-          echo "Repository: $REPOSITORY"
+          echo "Deploying valhalla-auth-client version $VERSION to GitHub Packages..."
           
-          # 使用 Maven deploy 命令，只部署 client 模块
-          # -pl 指定要部署的模块
-          # -DaltDeploymentRepository 指定部署仓库，格式：id::layout::url
-          # -Dmaven.deploy.skip=false 覆盖根 pom.xml 中的 skip 设置
-          # -Dcentral.skip=true 确保不发布到 Maven Central（双重保险）
+          # pom.xml 中已配置：
+          # - distributionManagement 指向 GitHub Packages
+          # - valhalla-auth-client 模块的 maven.deploy.skip=false
           ./mvnw -B -U -Drevision=$VERSION \
-            -Dmaven.deploy.skip=false \
-            -Dcentral.skip=true \
-            -DaltDeploymentRepository=github::default::https://maven.pkg.github.com/$REPOSITORY \
             -pl valhalla-auth-client \
             deploy -DskipTests
           
-          echo "✅ Successfully deployed client module to GitHub Package"
-          echo "📦 Package URL: https://github.com/$REPOSITORY/packages"
-          echo "📋 Maven dependency:"
-          echo "   <dependency>"
-          echo "     <groupId>io.github.yggdrasil-labs</groupId>"
-          echo "     <artifactId>valhalla-auth-client</artifactId>"
-          echo "     <version>$VERSION</version>"
-          echo "   </dependency>"
+          echo "✅ Successfully deployed to GitHub Packages"
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 
