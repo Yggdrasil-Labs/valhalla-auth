@@ -83,7 +83,7 @@
                 <groupId>org.springframework.boot</groupId>
                 <artifactId>spring-boot-maven-plugin</artifactId>
                 <configuration>
-                    <mainClass>io.github.yggdrasil-labs.start.Application</mainClass>
+                    <mainClass>com.yggdrasil.labs.start.Application</mainClass>
                 </configuration>
                 <executions>
                     <execution>
