@@ -217,6 +217,8 @@ jobs:
     permissions:
       contents: read
       packages: write
+    env:
+      GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
     steps:
       - uses: actions/checkout@de0fac2e4500dabe0009e67214ff5f5447ce83dd
         with:
@@ -244,43 +246,59 @@ jobs:
             exit 1
           fi
 
-      - name: Build and package client module
+      - name: Update version in pom.xml for publish
         run: |
           VERSION="${{ needs.prepare.outputs.version }}"
-          echo "Building client module with version: $VERSION"
-          ./mvnw -B -U -Drevision=$VERSION \
-            -pl valhalla-auth-client \
-            clean package -DskipTests
-          
-          echo "Verifying built jar:"
-          ls -lh valhalla-auth-client/target/*.jar | grep -v original || true
+          if [ -z "$VERSION" ]; then
+            echo "Error: Version is empty"
+            exit 1
+          fi
+          echo "Updating pom.xml revision to: $VERSION"
+          sed -i "s|<revision>[^<]*</revision>|<revision>$VERSION</revision>|g" pom.xml
+          grep -A 2 -B 2 "<revision>" pom.xml
 
-      - name: Flatten POM files before deploy
+      - name: Configure Maven for GitHub Packages
+        run: |
+          mkdir -p ~/.m2
+          cat > ~/.m2/settings.xml << 'EOF'
+          <settings xmlns="http://maven.apache.org/SETTINGS/1.0.0"
+                    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+                    xsi:schemaLocation="http://maven.apache.org/SETTINGS/1.0.0 https://maven.apache.org/xsd/settings-1.0.0.xsd">
+            <servers>
+              <server>
+                <id>github</id>
+                <username>${env.GITHUB_ACTOR}</username>
+                <password>${env.GITHUB_TOKEN}</password>
+              </server>
+            </servers>
+          </settings>
+          EOF
+
+      - name: Flatten POM files (resolve \${revision} for deploy)
         run: |
           VERSION="${{ needs.prepare.outputs.version }}"
-          echo "Executing flatten:flatten to replace \${revision} variables with version: $VERSION"
+          echo "Executing flatten:flatten to replace \${revision} with version: $VERSION"
           ./mvnw -B -U -Drevision=$VERSION \
             -pl valhalla-auth-client \
             flatten:flatten
-          echo "Flatten completed. Checking flattened POM:"
-          cat valhalla-auth-client/.flattened-pom.xml | head -30
+          echo "Using flattened POM for package and deploy:"
+          cp valhalla-auth-client/.flattened-pom.xml valhalla-auth-client/pom.xml
+
+      - name: Build and package client module
+        run: |
+          echo "Building client module (using flattened POM with resolved version)..."
+          ./mvnw -B -U -pl valhalla-auth-client \
+            clean package -DskipTests
+          echo "Verifying built jar:"
+          ls -lh valhalla-auth-client/target/*.jar | grep -v original || true
 
       - name: Deploy client module to GitHub Package
         run: |
           VERSION="${{ needs.prepare.outputs.version }}"
-          
           echo "Deploying valhalla-auth-client version $VERSION to GitHub Packages..."
-          
-          # pom.xml 中已配置：
-          # - distributionManagement 指向 GitHub Packages
-          # - valhalla-auth-client 模块的 maven.deploy.skip=false
-          ./mvnw -B -U -Drevision=$VERSION \
-            -pl valhalla-auth-client \
+          ./mvnw -B -U -pl valhalla-auth-client \
             deploy -DskipTests
-          
           echo "✅ Successfully deployed to GitHub Packages"
-        env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 
   # ==================== Docker 镜像发布 ====================
   publish-docker-image:
