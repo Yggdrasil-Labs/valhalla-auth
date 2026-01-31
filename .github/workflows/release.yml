@@ -270,6 +270,12 @@ jobs:
                 <username>${env.GITHUB_ACTOR}</username>
                 <password>${env.GITHUB_TOKEN}</password>
               </server>
+              <!-- 空的 central server 配置，防止 central-publishing-maven-plugin 报 null 错误 -->
+              <server>
+                <id>central</id>
+                <username>dummy</username>
+                <password>dummy</password>
+              </server>
             </servers>
           </settings>
           EOF
@@ -297,6 +303,7 @@ jobs:
           VERSION="${{ needs.prepare.outputs.version }}"
           echo "Deploying valhalla-auth-client version $VERSION to GitHub Packages..."
           ./mvnw -B -U -pl valhalla-auth-client \
+            -Dcentral-publishing.skip=true \
             deploy -DskipTests
           echo "✅ Successfully deployed to GitHub Packages"
 

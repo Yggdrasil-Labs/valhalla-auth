@@ -17,6 +17,26 @@
         <maven.deploy.skip>false</maven.deploy.skip>
     </properties>
 
+    <build>
+        <plugins>
+            <!-- 仅发布到 GitHub Packages，禁用 Maven Central（继承自 parent 的配置在 -pl 单独 deploy 时可能未生效） -->
+            <plugin>
+                <groupId>org.sonatype.central</groupId>
+                <artifactId>central-publishing-maven-plugin</artifactId>
+                <configuration>
+                    <skip>true</skip>
+                    <skipPublishing>true</skipPublishing>
+                </configuration>
+                <executions>
+                    <execution>
+                        <id>injected-central-publishing</id>
+                        <phase>none</phase>
+                    </execution>
+                </executions>
+            </plugin>
+        </plugins>
+    </build>
+
     <dependencies>
         <!-- COLA DTO 基础类 -->
         <dependency>
