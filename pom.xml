@@ -242,14 +242,28 @@
             <plugin>
                 <groupId>org.sonatype.central</groupId>
                 <artifactId>central-publishing-maven-plugin</artifactId>
+                <extensions>false</extensions>
                 <configuration>
                     <skip>true</skip>
                     <skipPublishing>true</skipPublishing>
+                    <autoPublish>false</autoPublish>
                 </configuration>
                 <executions>
                     <execution>
                         <id>injected-central-publishing</id>
                         <phase>none</phase>
+                        <goals><goal>none</goal></goals>
+                        <configuration><skip>true</skip></configuration>
+                    </execution>
+                    <execution>
+                        <id>default</id>
+                        <phase>none</phase>
+                        <configuration><skip>true</skip></configuration>
+                    </execution>
+                    <execution>
+                        <id>default-publish</id>
+                        <phase>none</phase>
+                        <configuration><skip>true</skip></configuration>
                     </execution>
                 </executions>
             </plugin>
