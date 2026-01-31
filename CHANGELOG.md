@@ -1,5 +1,25 @@
 # Changelog
 
+## [1.2.2](https://github.com/Yggdrasil-Labs/valhalla-auth/compare/v1.2.1...v1.2.2) (2026-01-31)
+
+
+### 🐛 Bug Fixes
+
+* **pom:** update mainClass path in pom.xml to reflect new package structure ([5ef0784](https://github.com/Yggdrasil-Labs/valhalla-auth/commit/5ef07841c1d60e8b7992dddae0ab47918cc31aa1))
+
+
+### 👷 Continuous Integration
+
+* **release:** 增强 GitHub Actions 工作流程以更新 pom.xml 版本并为 GitHub Packages 部署配置 Maven ([ec6f982](https://github.com/Yggdrasil-Labs/valhalla-auth/commit/ec6f9829d067b54e79f050ea606e2d7bd9b47849))
+* **release:** 更新 pom.xml 和 GitHub Actions 以禁用 Maven Central 发布并确保仅部署到 GitHub Packages ([b262ef3](https://github.com/Yggdrasil-Labs/valhalla-auth/commit/b262ef32fa5c212ab153de64901ac598e508b5a8))
+* **release:** 添加Maven Central配置以防止 Maven 插件错误，并更新构建配置以禁用Maven Central发布 ([7566abf](https://github.com/Yggdrasil-Labs/valhalla-auth/commit/7566abfb51565dfdcd5a4cc25e228a48deba0cc4))
+* **release:** 配置 GitHub Packages 发布和更新 pom.xml 以允许客户端模块发布 ([e541304](https://github.com/Yggdrasil-Labs/valhalla-auth/commit/e54130499162251379f50da09c7fdea1ab9de9d6))
+
+
+### 🔧 Miscellaneous Chores
+
+* bump version to 1.2.2-SNAPSHOT for next development cycle ([a06b94b](https://github.com/Yggdrasil-Labs/valhalla-auth/commit/a06b94bb415855f1f6d413d48746d2c096c12fb0))
+
 ## [1.2.1](https://github.com/Yggdrasil-Labs/valhalla-auth/compare/v1.2.0...v1.2.1) (2026-01-26)
 
 
