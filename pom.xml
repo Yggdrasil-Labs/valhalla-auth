@@ -27,7 +27,7 @@
         <project.reporting.outputEncoding>UTF-8</project.reporting.outputEncoding>
         <maven.deploy.skip>true</maven.deploy.skip>
 
-        <mimir-boot.version>2.0.4</mimir-boot.version>
+        <mimir-boot.version>2.1.0</mimir-boot.version>
         <cola.components.version>5.0.0</cola.components.version>
     </properties>
 
