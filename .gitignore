@@ -37,8 +37,7 @@ doc/
 .vscode/
 
 ### AI ###
-.cursor/
-openspec/
+
 
 ### Sensitive files ###
 application-local.yml
