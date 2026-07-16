@@ -14,7 +14,7 @@ valhalla-auth 认证服务当前 Token 相关功能均为 TODO 状态（TD1~TD4�
 
 - Access Token：15 分钟有效期
 - Refresh Token：7 天有效期
-- 刷新策略：Refresh 时仅签发新 AT，RT 不轮换
+- 刷新策略：Refresh 时签发新 AT 与新 RT，旧 RT 立即失效；检测到旧 RT 重放时吊销整个会话
 
 ### 签名算法
 
@@ -111,7 +111,7 @@ RefreshTokenExecutor.execute(refreshToken):
   5. 返回 RefreshCO { accessToken, expiresIn: 900 }
 ```
 
-- RT 不轮换，原 RT 继续有效
+- RT 每次刷新均轮换；同一 RT 只有一个刷新请求可以成功
 - Redis 必须可用（写操作）
 
 
@@ -214,7 +214,7 @@ LogoutAllExecutor.execute(userId):
 
 - 微信/OAuth 第三方登录（后续迭代）
 - MFA 多因子验证（数据模型已就绪，业务流程后续实现）
-- RT 轮换（当前 RT 不轮换，后续可升级）
+- 设备公钥证明（当前仅绑定客户端 deviceId，后续可升级为不可导出的设备密钥证明）
 - Token 黑名单持久化到数据库（仅 Redis）
 
 

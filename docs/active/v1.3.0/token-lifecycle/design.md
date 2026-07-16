@@ -3,454 +3,169 @@ id: token-lifecycle
 status: draft
 owner: team
 created: 2026-07-13
-updated: 2026-07-13
+updated: 2026-07-15
 ---
 
 # Token 生命周期管理
 
 ## Context
 
-valhalla-auth 认证服务当前 Token 相关功能均为 TODO 状态（LoginExecutor、VerifyTokenExecutor、RefreshTokenExecutor、LogoutExecutor）。现有代码已完成凭证查询和密码实体定义，但缺少：
-
-1. JWT 签发与解析能力
-2. Redis 元数据存储（支持主动吊销）
-3. 密码验证集成（BCrypt）
-4. 会话数管理（多设备并发控制）
-
-本设计基于已有 COLA 5.0 DDD 分层架构，新增 `TokenService` 接口（app 层定义、infrastructure 层实现），通过 jjwt 库签发 JWT、mimir-boot-starter-redis 管理 Token 元数据。
+认证服务需要实现可主动吊销的 JWT 会话，并保持既有 `app → domain ← infrastructure` 依赖方向。用户状态和 RBAC 的权威数据位于 `valhalla-user`：auth 只读取最小认证状态，不维护账户状态，也不公开管理员强制登出接口。
 
 ## Goal
 
-- 实现登录签发、验证、刷新、登出（单设备 + 全设备）完整 Token 生命周期
-- Token 验证 P99 延迟 ≤ 50ms
-- Redis 不可用时验证操作降级放行，写操作返回明确错误
-- 单用户最大并发会话数可配置（默认 5），超限 FIFO 踢出
+- 登录、验证、刷新、当前会话登出和用户全会话吊销均可端到端验证。
+- 每次刷新轮换 RT；同一 RT 的并发刷新仅成功一次，重放会吊销整个会话。
+- 用户禁用后 60 秒内吊销其所有会话。
+- Redis Cluster 与单实例 Redis 均支持会话原子操作。
 
 ## Non-Goal
 
-- 密钥轮换（双密钥滚动）— 后续迭代
-- Refresh Token 轮换 — 当前 RT 不轮换
-- MFA 多因子验证流程（数据模型已就绪，业务流程后续实现）
-- Token 黑名单持久化到数据库（仅 Redis）
-- 微信/OAuth 第三方登录
+- 不实现浏览器 Cookie 投递或设备公钥证明；本迭代仅绑定客户端 `deviceId` 的哈希，作为会话匹配条件。
+- 不把用户角色、权限或用户画像写入 JWT。
+- 不提供公开的 `logout-all` REST API。
+- 不实现 JWT 签名密钥双密钥滚动。
 
 ## Architecture
 
 ```mermaid
-flowchart TB
-    subgraph Adapter["适配层"]
-        AuthController["AuthController<br/>/api/v1/auth/*"]
-        AuthRpcFacade["AuthRpcFacadeImpl<br/>Dubbo RPC"]
-    end
+flowchart LR
+    Client -->|login / refresh / logout| AuthWeb["auth Web Adapter"]
+    Gateway -->|verify| AuthRpc["auth RPC Adapter"]
+    UserAdmin["valhalla-user RBAC"] -->|HMAC authenticated revoke-all RPC| AuthRpc
 
-    subgraph App["应用层"]
-        LoginExe["LoginExecutor"]
-        VerifyExe["VerifyTokenExecutor"]
-        RefreshExe["RefreshTokenExecutor"]
-        LogoutExe["LogoutExecutor"]
-        LogoutAllExe["LogoutAllExecutor"]
-        TokenSvc["TokenService (接口)"]
-    end
+    AuthWeb --> AuthApp["auth app executors"]
+    AuthRpc --> AuthApp
+    AuthApp --> TokenPort["domain TokenSessionGateway"]
+    AuthApp --> UserPort["domain UserAccountGateway"]
 
-    subgraph Infra["基础设施层"]
-        TokenSvcImpl["TokenServiceImpl"]
-        JwtUtil["JwtTokenProvider"]
-        RedisOps["Redis Operations"]
-    end
-
-    subgraph External["外部依赖"]
-        Redis["Redis"]
-        Nacos["Nacos (JWT Secret)"]
-        MySQL["MySQL (AuthPassword)"]
-    end
-
-    AuthController --> LoginExe
-    AuthController --> RefreshExe
-    AuthController --> LogoutExe
-    AuthRpcFacade --> VerifyExe
-    AuthController --> VerifyExe
-
-    LoginExe --> TokenSvc
-    VerifyExe --> TokenSvc
-    RefreshExe --> TokenSvc
-    LogoutExe --> TokenSvc
-    LogoutAllExe --> TokenSvc
-
-    TokenSvc -.->|实现| TokenSvcImpl
-    TokenSvcImpl --> JwtUtil
-    TokenSvcImpl --> RedisOps
-
-    JwtUtil --> Nacos
-    RedisOps --> Redis
-    LoginExe --> MySQL
+    TokenInfra["TokenSessionGatewayImpl"] --> TokenPort
+    UserInfra["UserAccountGatewayImpl"] --> UserPort
+    TokenInfra --> Redis
+    TokenInfra --> Jwt
+    UserInfra --> UserRpc["valhalla-user UserAuthState RPC"]
+    UserService -->|status disabled event, retry ≤60s| AuthRpc
 ```
 
-**数据流：**
-
-1. **登录**：Adapter → LoginExecutor → 查询凭证(MySQL) → 验证密码 → TokenService.issueTokenPair → 写 Redis → 返回 LoginResultCO { token: TokenCO, user: AuthUserCO }
-2. **验证**：Adapter → VerifyTokenExecutor → TokenService.verifyAccessToken → JWT 本地校验 → Redis 存在性检查（降级跳过） → 返回 VerifyTokenCO
-3. **刷新**：Adapter → RefreshTokenExecutor → TokenService.refreshAccessToken → JWT 校验 RT → Redis 确认 RT 有效 → 签发新 AT → 写 Redis → 返回 TokenCO
-4. **登出**：Adapter → LogoutExecutor → TokenService.revokeToken → 删除 AT/RT Redis key + 清理 ZSET → 返回 Response
-5. **全部登出**：Adapter → LogoutAllExecutor → TokenService.revokeAllTokens → 遍历 ZSET 批量删除 → 返回 Response
+`TokenSessionGateway` 和 `UserAccountGateway` 是 domain 层端口；infrastructure 实现端口，因此不反向依赖 app。app executor 只负责编排、错误码转换与 DTO 组装。
 
 ## Interface Contract
 
-### 1. TokenService（app 层接口）
-
-> 对应 Spec: 所有 Behavior
+### Domain ports
 
 ```java
-package com.yggdrasil.labs.app.auth.service;
-
-/**
- * Token 生命周期服务接口
- * 定义在 app 层，由 infrastructure 层实现
- */
-public interface TokenService {
-
-    /**
-     * 签发令牌对（AT + RT）
-     * 对应 Spec: 登录获取凭证 - 正常登录 / 超过最大会话数
-     *
-     * @param userId 用户ID
-     * @return 令牌对信息
-     * @throws TokenServiceException REDIS_UNAVAILABLE - 缓存服务不可用
-     */
-    TokenPairResult issueTokenPair(Long userId);
-
-    /**
-     * 验证访问令牌
-     * 对应 Spec: 验证访问令牌 - 全部场景
-     *
-     * @param accessToken JWT 字符串
-     * @return 验证结果
-     * @throws TokenServiceException TOKEN_EXPIRED / TOKEN_INVALID / TOKEN_REVOKED
-     */
-    VerifyTokenResult verifyAccessToken(String accessToken);
-
-    /**
-     * 刷新访问令牌
-     * 对应 Spec: 刷新访问令牌 - 全部场景
-     *
-     * @param refreshToken JWT 字符串
-     * @return 新的访问令牌信息
-     * @throws TokenServiceException TOKEN_EXPIRED / TOKEN_REVOKED / REDIS_UNAVAILABLE
-     */
-    RefreshTokenResult refreshAccessToken(String refreshToken);
-
-    /**
-     * 吊销令牌（当前会话）
-     * 对应 Spec: 登出 - 全部场景
-     *
-     * @param accessToken JWT 字符串（允许已过期）
-     * @throws TokenServiceException REDIS_UNAVAILABLE
-     */
-    void revokeToken(String accessToken);
-
-    /**
-     * 吊销用户所有令牌
-     * 对应 Spec: 强制登出所有设备 - 全部场景
-     *
-     * @param userId 用户ID
-     * @throws TokenServiceException REDIS_UNAVAILABLE
-     */
-    void revokeAllTokens(Long userId);
-}
-```
-
-**Result DTOs（app 层）：**
-
-```java
-/** TokenService 返回的令牌对 */
-@Data
-public class TokenPairResult {
-    private String accessToken;   // JWT 字符串
-    private String refreshToken;  // JWT 字符串
-    private Long expiresIn;       // AT 有效期（秒），固定 900
+public interface TokenSessionGateway {
+    TokenPair issue(long userId, DeviceSession device);
+    VerifiedAccessToken verifyAccess(String accessToken);
+    TokenPair rotate(String refreshToken, DeviceSession device);
+    void revokeCurrentAccessToken(String accessToken);
+    void revokeAll(long userId, RevocationReason reason);
 }
 
-/** 验证结果 */
-@Data
-public class VerifyTokenResult {
-    private Long userId;
-    private LocalDateTime expiresAt;
-    private Boolean degraded;  // true 表示 Redis 不可用，降级放行
+public interface UserAccountGateway {
+    UserAuthState getAuthState(long userId);
 }
 
-/** 刷新结果 */
-@Data
-public class RefreshTokenResult {
-    private String accessToken;  // 新签发的 AT
-    private Long expiresIn;      // 900
-}
+public record UserAuthState(long userId, boolean enabled, long statusVersion) {}
+public record DeviceSession(String deviceId, String deviceType, String deviceName) {}
+public record TokenPair(String accessToken, String refreshToken, long expiresIn) {}
+public record VerifiedAccessToken(long userId, Instant expiresAt, boolean degraded) {}
 ```
 
-### 2. LoginExecutor 改造
+- `issue` 与 `rotate` 在用户不存在或禁用时由 app 在调用前拒绝。
+- `rotate` 仅接受 `type=refresh`、签名有效、`iss/aud/sub/jti/sid/iat/nbf/exp` 完整的 JWT；返回新 AT 与新 RT。
+- `revokeCurrentAccessToken` 允许 AT 已过期，但始终校验签名、算法、`type=access`、`sub/jti/sid`，并且仅当 `jti` 是会话当前 AT 时删除会话。
 
-> 对应 Spec: 登录获取凭证 - 全部场景
+### 用户认证状态 RPC（valhalla-user 提供）
 
 ```java
-/**
- * 执行登录
- * @param cmd LoginCmd { credentialType, credentialValue, password }
- * @return SingleResponse<LoginResultCO> 包含 TokenCO { accessToken, refreshToken, expiresIn, ... } 和 AuthUserCO { userId, status, ... }
- *
- * 错误码：
- * - CREDENTIAL_NOT_FOUND → "用户名或密码错误"
- * - ACCOUNT_LOCKED → "账号已锁定，请 N 分钟后再试"
- * - ACCOUNT_DISABLED → "账号已被禁用，请联系管理员"
- * - PASSWORD_INCORRECT → "用户名或密码错误"（不区分用户不存在和密码错误）
- * - REDIS_UNAVAILABLE → "服务暂时不可用，请稍后重试"
- */
-@Transactional(rollbackFor = Exception.class)
-public SingleResponse<LoginResultCO> execute(LoginCmd cmd);
+SingleResponse<RpcUserAuthStateCO> getUserAuthState(RpcGetUserAuthStateQuery query);
+// RpcUserAuthStateCO: userId(Long), enabled(Boolean), statusVersion(Long)
 ```
 
-### 3. VerifyTokenExecutor
+该 RPC 仅返回登录决策需要的数据，不能复用含画像和角色列表的 `UserCO`。未知用户、禁用用户、RPC 超时或返回异常时，登录与刷新 fail-closed；访问令牌验证保留既有 Redis 降级语义。
 
-> 对应 Spec: 验证访问令牌 - 全部场景
-> ⚠️ Breaking Change: 返回类型从 `SingleResponse<AuthUserCO>` 变更为 `SingleResponse<VerifyTokenCO>`
-> 需同步修改 `AuthApplicationService.verifyToken` 签名及其实现类
+### 内部强制登出 RPC（auth 提供）
 
 ```java
-/**
- * 验证访问令牌
- * @param cmd VerifyTokenCmd { token }
- * @return SingleResponse<VerifyTokenCO>
- *
- * 返回 VerifyTokenCO { userId, expiresAt, degraded }
- *
- * 错误码：
- * - TOKEN_EXPIRED → "令牌已过期"
- * - TOKEN_INVALID → "令牌无效"
- * - TOKEN_REVOKED → "令牌已吊销"
- */
-public SingleResponse<VerifyTokenCO> execute(VerifyTokenCmd cmd);
+Response revokeAllTokens(RpcRevokeAllTokensCmd cmd);
+// targetUserId, operatorId, reason, issuedAtEpochSeconds, nonce, signature
 ```
 
-### 4. RefreshTokenExecutor
+- 仅 `valhalla-user` 在 RBAC 授权成功后调用；不映射 Web 路由。
+- `signature = HMAC-SHA-256(serviceName + targetUserId + operatorId + reason + issuedAt + nonce)`。
+- auth 校验 serviceName 固定为 `valhalla-user`、签名、60 秒时间窗与 Redis nonce 一次性消费；任何失败返回 `RPC_CALLER_UNAUTHORIZED`，不执行吊销。
+- 生产部署必须以 NetworkPolicy/等价网络 ACL 限制 RPC 端口仅接受 user 服务流量；mTLS 是后续替换 HMAC 的目标。
 
-> 对应 Spec: 刷新访问令牌 - 全部场景
+### 用户禁用事件
 
-```java
-/**
- * 刷新访问令牌
- * @param cmd RefreshTokenCmd { refreshToken }
- * @return SingleResponse<TokenCO>
- *
- * 返回 TokenCO { accessToken, expiresIn }（refreshToken 字段为 null，原 RT 不变）
- *
- * 错误码：
- * - TOKEN_EXPIRED → "刷新令牌已过期，请重新登录"
- * - TOKEN_REVOKED → "刷新令牌已失效"
- * - REDIS_UNAVAILABLE → "服务暂时不可用，请稍后重试"
- */
-public SingleResponse<TokenCO> execute(RefreshTokenCmd cmd);
-```
-
-### 5. LogoutExecutor 改造
-
-> 对应 Spec: 登出 - 全部场景
-
-```java
-/**
- * 登出当前会话
- * @param cmd LogoutCmd { accessToken }（revokeAll=false）
- * @return Response
- *
- * 错误码：
- * - REDIS_UNAVAILABLE → "服务暂时不可用，请稍后重试"
- */
-public Response execute(LogoutCmd cmd);
-```
-
-### 6. LogoutAllExecutor（新增）
-
-> 对应 Spec: 强制登出所有设备 - 全部场景
-
-```java
-/**
- * 强制登出所有设备
- * @param cmd LogoutCmd { userId, revokeAll=true }
- * @return Response
- *
- * 错误码：
- * - REDIS_UNAVAILABLE → "服务暂时不可用，请稍后重试"
- */
-public Response execute(LogoutCmd cmd);
-```
-
-### 7. AuthRpcFacade 扩展（client 层）
-
-> 对应 Spec: 验证访问令牌（网关调用）
-
-```java
-/**
- * 验证 Token（供 bifrost-gateway 通过 Dubbo 调用）
- * @param cmd RpcVerifyTokenCmd { token }
- * @return SingleResponse<RpcVerifyTokenCO> { userId, expiresAt, degraded }
- */
-SingleResponse<RpcVerifyTokenCO> verifyToken(RpcVerifyTokenCmd cmd);
-```
+用户状态从启用变为禁用后，`valhalla-user` 写入可重试的 outbox 事件；投递器调用上述内部 RPC，直到成功。事件创建到成功吊销的 SLA 为 60 秒。事件包含 targetUserId、状态版本、操作人、原因和关联 ID；auth 记录相同审计字段。
 
 ## Data Model
 
-### Redis Key 结构
+JWT 统一包含 `iss`、`aud`、`sub`、`jti`、`sid`、`iat`、`nbf`、`exp` 与 `type`。签名算法固定 HS256，解析器仅接受该算法。
 
-| Key | 类型 | TTL | 值/成员 | 用途 |
-|-----|------|-----|---------|------|
-| `token:access:{jti}` | String | 15min（可配置） | `{userId}:{rtJti}`（冒号分隔，登出时从 value 提取关联 RT） | AT 存在性验证 + 关联 RT 定位 |
-| `token:refresh:{jti}` | String | 7d（可配置） | `userId` | RT 存在性验证 |
-| `user:tokens:{userId}` | ZSET | 无（手动管理） | 成员: `at:{jti}` / `rt:{jti}`，score: 签发时间戳（epoch millis） | 会话管理、会话数限制、登出定位 |
+| Key | TTL | Value | 说明 |
+|---|---|---|---|
+| `token:{userId}:access:{jti}` | AT TTL | `sid` | 当前 AT 白名单 |
+| `token:{userId}:refresh:{rtJti}` | RT 剩余 TTL | `sid` | 当前 RT 白名单 |
+| `token:{userId}:used-refresh:{rtJti}` | 原 RT 剩余 TTL | `sid` | 重放检测 |
+| `token:{userId}:session:{sid}` | RT TTL | userId、currentAtJti、currentRtJti、deviceIdHash、expiresAt | 会话权威记录 |
+| `token:{userId}:sessions` | 显式管理 | ZSET: sid，score=RT 绝对过期毫秒 | 会话上限与 FIFO |
+| `token:rpc:nonce:{nonce}` | 60 秒 | caller service | 内部 RPC 防重放 |
 
-**操作模式：**
+同一用户会话操作的 key 使用 `{userId}` hash tag，保证 Redis Cluster 的 Lua 脚本在同一 slot 执行。脚本在创建、刷新和会话上限检查前移除已过期 ZSET 成员；所有会话删除同步删除索引成员。
 
-- **签发**：SET `token:access:{atJti}` = `{userId}:{rtJti}` + SET `token:refresh:{rtJti}` = `{userId}` + ZADD `user:tokens:{userId}` (at:{atJti}, rt:{rtJti})
-- **验证**：EXISTS `token:access:{jti}`（仅检查存在性，不解析 value）
-- **刷新**：EXISTS `token:refresh:{rtJti}` → DEL 旧 AT key → SET 新 AT key（value 包含同一 rtJti） → ZREM 旧 at 成员 + ZADD 新 at 成员
-- **登出**：GET `token:access:{atJti}` → 解析 value 得到 rtJti → DEL `token:access:{atJti}` + DEL `token:refresh:{rtJti}` + ZREM `user:tokens:{userId}` (at:{atJti}, rt:{rtJti})
-- **全部登出**：ZRANGE `user:tokens:{userId}` 0 -1 → 按前缀分类批量 DEL → DEL `user:tokens:{userId}`
-- **会话数限制**：ZCARD `user:tokens:{userId}` / 2 > max-sessions → ZPOPMIN 踢出最早成员对应的 AT/RT key
-
-### 配置项（Nacos）
-
-| 配置 | 默认值 | 说明 |
-|------|--------|------|
-| `auth.jwt.secret` | — (必填) | HS256 签名密钥，≥ 256 位 |
-| `auth.token.access-token-ttl` | `15m` | Access Token 有效期 |
-| `auth.token.refresh-token-ttl` | `7d` | Refresh Token 有效期 |
-| `auth.token.max-sessions` | `5` | 单用户最大并发会话数 |
-| `auth.password.lock-threshold` | `5` | 连续失败锁定阈值 |
-| `auth.password.lock-duration` | `30m` | 锁定时长 |
-
-### JWT Claims 结构
-
-```json
-{
-  "sub": "10001",
-  "jti": "550e8400-e29b-41d4-a716-446655440000",
-  "iat": 1752364800,
-  "exp": 1752365700,
-  "type": "access"
-}
-```
-
-- `type` 取值：`access` | `refresh`
-- `sub` 为字符串形式的 userId
+刷新 Lua 脚本必须原子完成：确认 session 的 currentRtJti 与提交 RT 一致、写旧 RT 已使用标记、删除旧 AT/RT、写新 AT/RT/session、更新 ZSET。若提交 RT 已在 used-refresh 中，脚本删除整个 session 并返回 `TOKEN_REPLAYED`；其他并发请求返回 `TOKEN_REVOKED`。
 
 ## Error Handling
 
-| 外部依赖 | 失败场景 | 处理策略 | 影响范围 |
-|----------|----------|----------|----------|
-| Redis | 连接超时/不可用 | 验证：降级放行（跳过吊销检查，返回 `degraded=true`）；写操作（登录/刷新/登出）：返回 `REDIS_UNAVAILABLE` 错误 | 验证不受影响，登录/刷新/登出暂不可用 |
-| Redis | 单次命令超时 | 等同连接不可用处理，Redis 配置合理超时（200ms） | 同上 |
-| MySQL | 查询凭证/密码失败 | 登录返回 500 服务内部错误，事务回滚 | 仅登录受影响 |
-| Nacos | JWT Secret 配置缺失 | 应用启动失败（@Value 必填校验） | 服务无法启动 |
-| Nacos | 运行时配置刷新失败 | 使用内存中已缓存的配置值继续运行 | 无影响 |
-| 乐观锁 | 密码失败计数并发冲突 | 捕获 OptimisticLockException，重试 1 次，仍失败则忽略（安全方向：少计一次不影响安全） | 极端并发下可能少计一次失败 |
-
-### 新增错误码
-
-| 错误码 | HTTP Status | 描述 | 触发场景 |
-|--------|-------------|------|----------|
-| `ACCOUNT_LOCKED` | 423 | 账号已锁定 | 连续失败超过阈值 |
-| `ACCOUNT_DISABLED` | 403 | 账号已被禁用 | 管理员禁用 |
-| `TOKEN_EXPIRED` | 401 | 令牌已过期 | AT/RT 超过有效期 |
-| `TOKEN_INVALID` | 401 | 令牌无效 | 签名错误/格式错误 |
-| `TOKEN_REVOKED` | 401 | 令牌已吊销 | Redis key 不存在（已登出） |
-| `REDIS_UNAVAILABLE` | 503 | 服务暂时不可用 | Redis 连接失败 + 写操作 |
+| 依赖/场景 | 策略 |
+|---|---|
+| Redis 验证读失败 | 仅 AT 验证返回 `degraded=true`；不读取用户状态。 |
+| Redis 写、Lua 或 nonce 操作失败 | 登录、刷新、登出和强制登出返回 `REDIS_UNAVAILABLE`。 |
+| user auth-state RPC 超时/失败 | 登录、刷新返回 `USER_STATE_UNAVAILABLE`，不签发 token。 |
+| RT 重放 | 吊销整个 sid，返回 `TOKEN_REPLAYED`。 |
+| HMAC 无效、过期或 nonce 重复 | 返回 `RPC_CALLER_UNAUTHORIZED`，不泄露签名校验细节。 |
+| 用户禁用 outbox 投递失败 | 指数退避重试并告警；超过 60 秒触发告警和人工处理。 |
 
 ## Non-Functional Requirements
 
-| 指标 | 目标 | 度量方式 |
-|------|------|----------|
-| Token 验证延迟 P99 | ≤ 50ms | 本地 JWT 校验 + Redis GET |
-| Token 验证降级延迟 P99 | ≤ 5ms | 纯本地 JWT 校验（无网络 IO） |
-| 登录延迟 P99 | ≤ 200ms | MySQL 查询 + BCrypt 验证 + Redis 写入 |
-| JWT Secret 长度 | ≥ 256 位 | 启动校验 |
-| Redis 命令超时 | 200ms | Spring Data Redis 配置 |
-| 最大并发会话 | 可配置，默认 5 | ZSET ZCARD |
-| 密码存储算法 | BCrypt (cost=10) | PasswordService |
+| 维度 | 指标 |
+|---|---|
+| Token 验证 | Redis 正常时 P99 ≤ 50ms；降级本地验签 P99 ≤ 5ms |
+| 登录 | P99 ≤ 200ms，含用户状态 RPC、BCrypt 与 Redis Lua |
+| 会话上限 | 默认 5，任何并发登录后不超过 5 条有效 session |
+| 禁用传播 | user 状态变更后 60 秒内完成全会话吊销 |
+| 安全 | JWT 密钥 ≥256 位；HMAC 时间窗 60 秒；nonce 单次使用 |
+| 审计 | 登录、刷新、RT 重放、吊销和内部 RPC 拒绝均记录关联 ID |
 
 ## Alternatives Considered
 
-### 备选方案：Token 黑名单模式（而非白名单）
-
-**方案描述**：不在 Redis 存储有效 Token，仅在吊销时写入黑名单 key（`token:blacklist:{jti}` TTL=AT 剩余有效期）。验证时检查黑名单不存在即通过。
-
-**优点**：
-- Redis 写入量少（仅登出时写）
-- 正常验证路径 Redis 命中率低
-
-**放弃原因**：
-- 无法支持"全部登出"（不知道有哪些活跃 Token）
-- 无法支持会话数限制（不知道当前会话数）
-- Redis 不可用时无法保证吊销生效
-
-**当前方案优势**：白名单模式天然支持会话管理、全部登出、Redis 不可用时保守降级（key 不存在 = 已吊销，但降级放行只在验证场景）。
+| 方案 | 不选原因 |
+|---|---|
+| 一个 ZSET 成员保存 AT 与 RT | AT 过期、RT 轮换和多 key 清理无法可靠保持配对。 |
+| 刷新时保留 RT | 无法检测和遏制被窃 RT 的重放。 |
+| auth 自行查询/维护角色 | 违反用户服务拥有 RBAC 的边界。 |
+| 仅凭 K8s 内网保护强制登出 RPC | 不能防止横向调用；至少需要 HMAC 与网络 ACL。 |
 
 ## Testing Strategy
 
-| 测试对象 | 层级 | 验证方法 | 通过标准 |
-|----------|------|----------|----------|
-| TokenServiceImpl.issueTokenPair | 单元测试 | Mock Redis，验证 JWT 结构和 Redis 命令 | AT/RT 含正确 claims；Redis SET 和 ZADD 各执行 1 次 |
-| TokenServiceImpl.verifyAccessToken | 单元测试 | Mock Redis EXISTS 返回 true/false/异常 | 有效返回 userId；key 不存在返回 TOKEN_REVOKED；Redis 异常返回 degraded=true |
-| TokenServiceImpl.refreshAccessToken | 单元测试 | Mock Redis EXISTS + SET | RT 有效时返回新 AT；RT 不存在返回 TOKEN_REVOKED；Redis 异常返回 REDIS_UNAVAILABLE |
-| TokenServiceImpl.revokeToken | 单元测试 | Mock Redis DEL + ZREM | 验证删除正确的 key 和 ZSET 成员 |
-| TokenServiceImpl.revokeAllTokens | 单元测试 | Mock Redis ZRANGE + DEL | 验证批量删除所有成员对应 key |
-| TokenServiceImpl 会话数限制 | 单元测试 | Mock ZCARD 返回 ≥ max-sessions | 验证 ZPOPMIN 被调用，最早会话对应 key 被删除 |
-| LoginExecutor 正常登录 | 单元测试 | Mock 凭证/密码仓储 + TokenService | 验证密码匹配后调用 issueTokenPair，返回 LoginResultCO |
-| LoginExecutor 密码错误 | 单元测试 | Mock 密码不匹配 | 验证失败计数递增，返回 PASSWORD_INCORRECT |
-| LoginExecutor 账号锁定 | 单元测试 | Mock AuthPassword locked_until > now | 返回 ACCOUNT_LOCKED |
-| LoginExecutor 超限踢出 | 单元测试 | 模拟 issueTokenPair 触发 FIFO | 验证登录成功且最早会话被踢出 |
-| VerifyTokenExecutor | 单元测试 | Mock TokenService | 各错误码正确传递 |
-| RefreshTokenExecutor | 单元测试 | Mock TokenService | 返回新 AT，原 RT 不受影响 |
-| LogoutExecutor | 单元测试 | Mock TokenService.revokeToken | 验证调用正确方法 |
-| LogoutAllExecutor | 单元测试 | Mock TokenService.revokeAllTokens | 验证调用正确方法 |
-| JwtTokenProvider | 单元测试 | 真实 jjwt 库 | 签发 → 解析还原 claims；篡改签名 → 抛异常；过期 → 抛异常 |
-| Redis 降级 | 集成测试 | Embedded Redis 启动后关闭 | 验证验证降级放行；写操作返回 REDIS_UNAVAILABLE |
-| 登录→验证→刷新→登出 全流程 | 集成测试 | Testcontainers (Redis + MySQL) | 端到端流程正确，Token 状态变更符合预期 |
-| AuthController REST API | 集成测试 | MockMvc + @SpringBootTest | HTTP 状态码、响应体结构正确 |
-| AuthRpcFacade.verifyToken | 集成测试 | Dubbo 测试框架 | RPC 调用返回正确结果 |
+| 对象 | 层级 | 通过标准 |
+|---|---|---|
+| TokenSessionGateway Lua | Redis 集成 | 并发刷新只一成功；重放吊销 sid；旧 AT 不能删新 session；Cluster hash tag 无 CROSSSLOT |
+| JWT provider | 单元 | 拒绝算法/issuer/audience/type/必填 claim 异常；仅登出路径豁免 exp |
+| UserAccountGateway | 单元 | enabled 返回可登录；禁用、未知、超时均 fail-closed |
+| 用户认证状态 RPC | Dubbo 集成 | 仅返回最小状态对象，状态版本递增可观察 |
+| 内部 revoke-all RPC | 集成 | 有效 HMAC 成功；签名、时间窗、nonce 重放均拒绝 |
+| 禁用 outbox | 集成 | 禁用后 60 秒内调用 auth 并撤销全部会话；失败重试可恢复 |
+| 全生命周期 | 端到端 | 登录→验证→轮换→登出；多会话 FIFO；Redis 降级行为符合 Spec |
 
 ## Milestones
 
-### Phase 1：基础设施层（TokenService 实现）
-
-**交付物：**
-- `mimir-boot-starter-redis` 依赖引入（valhalla-auth-start/pom.xml）
-- `jjwt` 依赖引入（valhalla-auth-infrastructure/pom.xml）
-- `JwtTokenProvider`：JWT 签发 + 解析 + 校验
-- `TokenService` 接口定义（app 层）
-- `TokenServiceImpl` 实现（infrastructure 层）：issueTokenPair、verifyAccessToken、refreshAccessToken、revokeToken、revokeAllTokens
-- Redis 配置（application.yml / Nacos）
-- 单元测试覆盖 TokenService 所有方法
-
-### Phase 2：Executor 实现（登录 + 验证）
-
-**交付物：**
-- `LoginExecutor` 改造：密码验证（BCrypt）+ TokenService 集成 + 失败计数 + 锁定逻辑
-- `VerifyTokenExecutor` 改造：委托 TokenService.verifyAccessToken
-- `VerifyTokenCO` 新增（替代原 AuthUserCO 用于验证场景）
-- 新增错误码：ACCOUNT_LOCKED、ACCOUNT_DISABLED、TOKEN_EXPIRED、TOKEN_INVALID、TOKEN_REVOKED
-- AuthPassword 领域实体扩展：`failedAttempts`、`lockedUntil` 字段
-- 数据库迁移脚本：auth_password 表增加锁定相关字段
-- 单元测试覆盖全部登录场景
-
-### Phase 3：刷新 + 登出
-
-**交付物：**
-- `RefreshTokenExecutor` 改造：委托 TokenService.refreshAccessToken
-- `LogoutExecutor` 改造：委托 TokenService.revokeToken
-- `LogoutAllExecutor` 新增：委托 TokenService.revokeAllTokens
-- `LogoutCmd` 调整：增加 `accessToken` 字段逻辑
-- 新增错误码：REDIS_UNAVAILABLE
-- 单元测试覆盖全部刷新和登出场景
-
-### Phase 4：RPC 契约 + 集成测试
-
-**交付物：**
-- `valhalla-auth-client`：新增 `RpcVerifyTokenCmd`、`RpcVerifyTokenCO`、`AuthRpcFacade.verifyToken` 方法
-- `AuthRpcFacadeImpl`：实现 verifyToken RPC
-- 集成测试：Redis 降级测试、全流程测试、REST API 测试
-- Nacos 配置项文档化
+| 阶段 | 产出 | 依赖 |
+|---|---|---|
+| 1 | user auth-state RPC 与禁用事件 outbox | 无 |
+| 2 | auth domain ports、JWT、Redis 原子会话 | 1 的 client 契约 |
+| 3 | app/adapters、HMAC 内部 RPC | 2 |
+| 4 | 集成、并发与安全测试 | 1-3 |
