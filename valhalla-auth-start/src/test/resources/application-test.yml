@@ -1,9 +1,7 @@
 spring:
   application:
     name: valhalla-auth-test
-  config:
-    import:
-      - optional:classpath:bootstrap-dubbo.yaml
+  # 不导入 Dubbo 配置（测试环境不需要）
   data:
     redis:
       host: ${REDIS_HOST:localhost}
@@ -14,6 +12,19 @@ spring:
     username: ${MYSQL_USERNAME:root}
     password: ${MYSQL_PASSWORD:test}
     driver-class-name: com.mysql.cj.jdbc.Driver
+  cloud:
+    nacos:
+      config:
+        enabled: false
+      discovery:
+        enabled: false
+
+# 禁用 Dubbo
+dubbo:
+  application:
+    register-mode: none
+  registry:
+    address: N/A
 
 auth:
   jwt:
@@ -31,3 +42,4 @@ logging:
     com.alibaba.nacos: OFF
     com.alibaba.cloud.nacos: OFF
     org.apache.dubbo: OFF
+    org.apache.dubbo.registry: OFF

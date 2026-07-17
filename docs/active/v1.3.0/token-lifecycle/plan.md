@@ -1,10 +1,10 @@
 # Token 生命周期管理
 
-**Branch:** [待填充]
-**Baseline SHA:** [待填充]
-**Worktree Path:** [待填充]
-**Started At:** [待填充]
-**Updated At:** [待填充]
+**Branch:** main
+**Baseline SHA:** 098bc8d
+**Worktree Path:** /home/yangyang/workspace/codes/Yggdrasil-Labs/valhalla-project/valhalla-auth
+**Started At:** 2026-07-17T07:32
+**Updated At:** 2026-07-17T08:00
 
 **Goal:** 实现登录签发、验证、刷新、登出（单设备+全设备）完整 Token 生命周期，支持 Redis 降级和会话数控制
 **Architecture:** 新增 TokenService 接口（app 层定义、infrastructure 层实现），通过 jjwt 签发 JWT，mimir-boot-starter-redis 管理 Token 元数据（白名单模式），Executor 层编排业务流程
