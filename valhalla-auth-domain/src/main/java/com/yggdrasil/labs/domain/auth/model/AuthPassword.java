@@ -1,5 +1,6 @@
 package com.yggdrasil.labs.domain.auth.model;
 
+import java.time.Duration;
 import java.time.LocalDateTime;
 
 import com.alibaba.cola.domain.Entity;
@@ -40,6 +41,12 @@ public class AuthPassword {
     /** 密码过期时间 */
     private LocalDateTime passwordExpiresAt;
 
+    /** 连续失败次数 */
+    private Integer failedAttempts;
+
+    /** 锁定截止时间 */
+    private LocalDateTime lockedUntil;
+
     /** 最后修改时间 */
     private LocalDateTime changedAt;
 
@@ -58,6 +65,7 @@ public class AuthPassword {
         password.setPasswordVersion(1);
         password.setPasswordStatus(PasswordStatus.VALID);
         password.setForceChange(false);
+        password.setFailedAttempts(0);
         password.setChangedAt(LocalDateTime.now());
         password.setCreateTime(LocalDateTime.now());
         password.setUpdateTime(LocalDateTime.now());
@@ -73,6 +81,7 @@ public class AuthPassword {
         password.setPasswordVersion(1);
         password.setPasswordStatus(PasswordStatus.VALID);
         password.setForceChange(true);
+        password.setFailedAttempts(0);
         password.setChangedAt(LocalDateTime.now());
         password.setCreateTime(LocalDateTime.now());
         password.setUpdateTime(LocalDateTime.now());
@@ -104,6 +113,30 @@ public class AuthPassword {
     /** 检查密码是否有效 */
     public boolean isValid() {
         return passwordStatus == PasswordStatus.VALID && !isExpired();
+    }
+
+    /** 检查账号是否被锁定 */
+    public boolean isLocked() {
+        return lockedUntil != null && lockedUntil.isAfter(LocalDateTime.now());
+    }
+
+    /** 递增失败次数 */
+    public void incrementFailedAttempts() {
+        if (this.failedAttempts == null) {
+            this.failedAttempts = 0;
+        }
+        this.failedAttempts++;
+    }
+
+    /** 锁定账号 */
+    public void lock(Duration duration) {
+        this.lockedUntil = LocalDateTime.now().plus(duration);
+    }
+
+    /** 重置失败次数和锁定状态 */
+    public void resetFailedAttempts() {
+        this.failedAttempts = 0;
+        this.lockedUntil = null;
     }
 
     /** 设置强制改密 */

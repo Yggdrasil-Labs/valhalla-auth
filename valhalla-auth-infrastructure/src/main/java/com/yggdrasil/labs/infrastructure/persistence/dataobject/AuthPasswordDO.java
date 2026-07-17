@@ -43,6 +43,12 @@ public class AuthPasswordDO {
     /** 密码过期时间 */
     private LocalDateTime passwordExpiresAt;
 
+    /** 连续失败次数 */
+    private Integer failedAttempts;
+
+    /** 锁定截止时间 */
+    private LocalDateTime lockedUntil;
+
     /** 最后修改时间 */
     private LocalDateTime changedAt;
 

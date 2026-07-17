@@ -27,6 +27,15 @@ public enum AuthErrorCode {
     /** Token不存在 */
     TOKEN_NOT_FOUND("TOKEN_NOT_FOUND", "Token不存在"),
 
+    /** Token已过期 */
+    TOKEN_EXPIRED("TOKEN_EXPIRED", "令牌已过期"),
+
+    /** Token无效 */
+    TOKEN_INVALID("TOKEN_INVALID", "令牌无效"),
+
+    /** Token已吊销 */
+    TOKEN_REVOKED("TOKEN_REVOKED", "令牌已吊销"),
+
     /** 账户不可用 */
     ACCOUNT_UNAVAILABLE("ACCOUNT_UNAVAILABLE", "账户不可用"),
 
@@ -49,7 +58,16 @@ public enum AuthErrorCode {
     INVALID_CREDENTIAL_TYPE("INVALID_CREDENTIAL_TYPE", "无效的凭证类型"),
 
     /** OAuth 场景必须提供 provider */
-    PROVIDER_REQUIRED("PROVIDER_REQUIRED", "OAuth 场景必须提供 provider");
+    PROVIDER_REQUIRED("PROVIDER_REQUIRED", "OAuth 场景必须提供 provider"),
+
+    /** 账号已锁定 */
+    ACCOUNT_LOCKED("ACCOUNT_LOCKED", "账号已锁定"),
+
+    /** 账号已被禁用 */
+    ACCOUNT_DISABLED("ACCOUNT_DISABLED", "账号已被禁用"),
+
+    /** Redis 不可用 */
+    REDIS_UNAVAILABLE("REDIS_UNAVAILABLE", "服务暂时不可用，请稍后重试");
 
     private final String errCode;
     private final String errDesc;
