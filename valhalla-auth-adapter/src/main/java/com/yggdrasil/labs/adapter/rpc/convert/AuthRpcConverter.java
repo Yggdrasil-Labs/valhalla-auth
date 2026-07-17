@@ -4,11 +4,15 @@ import org.springframework.stereotype.Component;
 
 import com.yggdrasil.labs.app.auth.dto.cmd.CreateCredentialCmd;
 import com.yggdrasil.labs.app.auth.dto.cmd.InitializeUserCmd;
+import com.yggdrasil.labs.app.auth.dto.cmd.VerifyTokenCmd;
 import com.yggdrasil.labs.app.auth.dto.co.UserInitializationCO;
+import com.yggdrasil.labs.app.auth.dto.co.VerifyTokenCO;
 import com.yggdrasil.labs.app.auth.dto.enums.CredentialTypeEnum;
 import com.yggdrasil.labs.client.dto.cmd.RpcCreateCredentialCmd;
 import com.yggdrasil.labs.client.dto.cmd.RpcInitializeUserCmd;
+import com.yggdrasil.labs.client.dto.cmd.RpcVerifyTokenCmd;
 import com.yggdrasil.labs.client.dto.co.RpcUserInitializationCO;
+import com.yggdrasil.labs.client.dto.co.RpcVerifyTokenCO;
 import com.yggdrasil.labs.client.dto.enums.RpcCredentialTypeEnum;
 
 /**
@@ -81,5 +85,27 @@ public class AuthRpcConverter {
             return null;
         }
         return RpcCredentialTypeEnum.fromCode(src.getCode());
+    }
+
+    /** RpcVerifyTokenCmd -> VerifyTokenCmd */
+    public VerifyTokenCmd toAppCmd(RpcVerifyTokenCmd src) {
+        if (src == null) {
+            return null;
+        }
+        var dest = new VerifyTokenCmd();
+        dest.setToken(src.getToken());
+        return dest;
+    }
+
+    /** VerifyTokenCO -> RpcVerifyTokenCO */
+    public RpcVerifyTokenCO toRpcCO(VerifyTokenCO src) {
+        if (src == null) {
+            return null;
+        }
+        var dest = new RpcVerifyTokenCO();
+        dest.setUserId(src.getUserId());
+        dest.setExpiresAt(src.getExpiresAt());
+        dest.setDegraded(src.getDegraded());
+        return dest;
     }
 }

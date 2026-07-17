@@ -4,7 +4,9 @@ import com.alibaba.cola.dto.Response;
 import com.alibaba.cola.dto.SingleResponse;
 import com.yggdrasil.labs.client.dto.cmd.RpcCreateCredentialCmd;
 import com.yggdrasil.labs.client.dto.cmd.RpcInitializeUserCmd;
+import com.yggdrasil.labs.client.dto.cmd.RpcVerifyTokenCmd;
 import com.yggdrasil.labs.client.dto.co.RpcUserInitializationCO;
+import com.yggdrasil.labs.client.dto.co.RpcVerifyTokenCO;
 
 /**
  * 认证服务 Dubbo RPC Facade 接口
@@ -44,4 +46,14 @@ public interface AuthRpcFacade {
      * @return 用户初始化结果（包含凭证信息和初始密码，如适用）
      */
     SingleResponse<RpcUserInitializationCO> initializeUser(RpcInitializeUserCmd cmd);
+
+    /**
+     * 验证 Token
+     *
+     * <p>供外部服务通过 Dubbo RPC 验证 Token 有效性，返回用户ID、过期时间等信息
+     *
+     * @param cmd Token 验证命令
+     * @return 验证结果（包含用户ID、过期时间、降级标志）
+     */
+    SingleResponse<RpcVerifyTokenCO> verifyToken(RpcVerifyTokenCmd cmd);
 }

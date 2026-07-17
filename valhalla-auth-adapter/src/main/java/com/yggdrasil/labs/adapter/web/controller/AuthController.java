@@ -30,6 +30,7 @@ import com.yggdrasil.labs.app.auth.dto.co.AuthUserCO;
 import com.yggdrasil.labs.app.auth.dto.co.CredentialCO;
 import com.yggdrasil.labs.app.auth.dto.co.LoginResultCO;
 import com.yggdrasil.labs.app.auth.dto.co.TokenCO;
+import com.yggdrasil.labs.app.auth.dto.co.VerifyTokenCO;
 import com.yggdrasil.labs.app.auth.service.AuthApplicationService;
 
 /**
@@ -87,7 +88,8 @@ public class AuthController {
      * @return 验证结果（包含用户ID等信息）
      */
     @PostMapping("/verify")
-    public SingleResponse<AuthUserCO> verifyToken(@Valid @RequestBody VerifyTokenRequest request) {
+    public SingleResponse<VerifyTokenCO> verifyToken(
+            @Valid @RequestBody VerifyTokenRequest request) {
         return authApplicationService.verifyToken(authWebConverter.toVerifyTokenCmd(request));
     }
 

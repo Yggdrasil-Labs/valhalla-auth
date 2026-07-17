@@ -9,12 +9,16 @@ import com.alibaba.cola.dto.SingleResponse;
 import com.yggdrasil.labs.adapter.rpc.convert.AuthRpcConverter;
 import com.yggdrasil.labs.app.auth.dto.cmd.CreateCredentialCmd;
 import com.yggdrasil.labs.app.auth.dto.cmd.InitializeUserCmd;
+import com.yggdrasil.labs.app.auth.dto.cmd.VerifyTokenCmd;
 import com.yggdrasil.labs.app.auth.dto.co.UserInitializationCO;
+import com.yggdrasil.labs.app.auth.dto.co.VerifyTokenCO;
 import com.yggdrasil.labs.app.auth.service.AuthApplicationService;
 import com.yggdrasil.labs.client.api.AuthRpcFacade;
 import com.yggdrasil.labs.client.dto.cmd.RpcCreateCredentialCmd;
 import com.yggdrasil.labs.client.dto.cmd.RpcInitializeUserCmd;
+import com.yggdrasil.labs.client.dto.cmd.RpcVerifyTokenCmd;
 import com.yggdrasil.labs.client.dto.co.RpcUserInitializationCO;
+import com.yggdrasil.labs.client.dto.co.RpcVerifyTokenCO;
 
 /**
  * 认证服务 RPC Facade 实现
@@ -50,5 +54,19 @@ public class AuthRpcFacadeImpl implements AuthRpcFacade {
         }
 
         return SingleResponse.buildFailure(appResponse.getErrCode(), appResponse.getErrMessage());
+    }
+
+    @Override
+    public SingleResponse<RpcVerifyTokenCO> verifyToken(RpcVerifyTokenCmd cmd) {
+        VerifyTokenCmd appCmd = authRpcConverter.toAppCmd(cmd);
+        SingleResponse<VerifyTokenCO> result = authApplicationService.verifyToken(appCmd);
+
+        if (!result.isSuccess()) {
+            return SingleResponse.buildFailure(result.getErrCode(), result.getErrMessage());
+        }
+
+        VerifyTokenCO co = result.getData();
+        RpcVerifyTokenCO rpcCO = authRpcConverter.toRpcCO(co);
+        return SingleResponse.of(rpcCO);
     }
 }
