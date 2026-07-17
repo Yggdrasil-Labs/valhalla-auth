@@ -19,6 +19,7 @@ import com.yggdrasil.labs.app.auth.dto.co.CredentialCO;
 import com.yggdrasil.labs.app.auth.dto.co.LoginResultCO;
 import com.yggdrasil.labs.app.auth.dto.co.TokenCO;
 import com.yggdrasil.labs.app.auth.dto.co.UserInitializationCO;
+import com.yggdrasil.labs.app.auth.dto.co.VerifyTokenCO;
 import com.yggdrasil.labs.app.auth.dto.query.GetTokenQuery;
 import com.yggdrasil.labs.app.auth.dto.query.GetUserQuery;
 import com.yggdrasil.labs.app.auth.dto.query.ListCredentialsQuery;
@@ -67,7 +68,7 @@ public class AuthApplicationServiceImpl implements AuthApplicationService {
     }
 
     @Override
-    public SingleResponse<AuthUserCO> verifyToken(VerifyTokenCmd cmd) {
+    public SingleResponse<VerifyTokenCO> verifyToken(VerifyTokenCmd cmd) {
         return verifyTokenExecutor.execute(cmd);
     }
 

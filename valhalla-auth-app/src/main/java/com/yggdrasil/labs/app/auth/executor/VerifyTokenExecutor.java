@@ -5,10 +5,11 @@ import jakarta.annotation.Resource;
 import org.springframework.stereotype.Component;
 
 import com.alibaba.cola.dto.SingleResponse;
-import com.yggdrasil.labs.app.auth.assembler.AuthAssembler;
 import com.yggdrasil.labs.app.auth.dto.cmd.VerifyTokenCmd;
-import com.yggdrasil.labs.app.auth.dto.co.AuthUserCO;
-import com.yggdrasil.labs.app.auth.dto.enums.AuthErrorCode;
+import com.yggdrasil.labs.app.auth.dto.co.VerifyTokenCO;
+import com.yggdrasil.labs.app.auth.service.TokenService;
+import com.yggdrasil.labs.app.auth.service.TokenServiceException;
+import com.yggdrasil.labs.app.auth.service.VerifyTokenResult;
 
 /**
  * Token 验证用例执行器
@@ -18,18 +19,19 @@ import com.yggdrasil.labs.app.auth.dto.enums.AuthErrorCode;
 @Component
 public class VerifyTokenExecutor {
 
-    @Resource private AuthAssembler authAssembler;
+    @Resource private TokenService tokenService;
 
     /** 执行 Token 验证用例 */
-    public SingleResponse<AuthUserCO> execute(VerifyTokenCmd cmd) {
-        // TODO: 实现 Token 验证逻辑
-        // 1. 解析 JWT Token
-        // 2. 验证 Token 签名和过期时间
-        // 3. 从 Redis 验证 Token 状态
-        // 4. 根据 Token 中的 userId 获取用户信息（可能需要调用用户服务）
-        // 注意：Token 信息存储在 Redis 中，不操作数据库
-        return SingleResponse.buildFailure(
-                AuthErrorCode.VERIFY_TOKEN_NOT_IMPLEMENTED.getErrCode(),
-                AuthErrorCode.VERIFY_TOKEN_NOT_IMPLEMENTED.getErrDesc());
+    public SingleResponse<VerifyTokenCO> execute(VerifyTokenCmd cmd) {
+        try {
+            VerifyTokenResult result = tokenService.verifyAccessToken(cmd.getToken());
+            VerifyTokenCO co = new VerifyTokenCO();
+            co.setUserId(result.getUserId());
+            co.setExpiresAt(result.getExpiresAt());
+            co.setDegraded(result.getDegraded());
+            return SingleResponse.of(co);
+        } catch (TokenServiceException e) {
+            return SingleResponse.buildFailure(e.getErrorCode(), e.getMessage());
+        }
     }
 }

@@ -1,11 +1,15 @@
 package com.yggdrasil.labs.app.auth.executor;
 
+import jakarta.annotation.Resource;
+
 import org.springframework.stereotype.Component;
 
 import com.alibaba.cola.dto.SingleResponse;
 import com.yggdrasil.labs.app.auth.dto.cmd.RefreshTokenCmd;
 import com.yggdrasil.labs.app.auth.dto.co.TokenCO;
-import com.yggdrasil.labs.app.auth.dto.enums.AuthErrorCode;
+import com.yggdrasil.labs.app.auth.service.RefreshTokenResult;
+import com.yggdrasil.labs.app.auth.service.TokenService;
+import com.yggdrasil.labs.app.auth.service.TokenServiceException;
 
 /**
  * Token 刷新用例执行器
@@ -15,15 +19,19 @@ import com.yggdrasil.labs.app.auth.dto.enums.AuthErrorCode;
 @Component
 public class RefreshTokenExecutor {
 
+    @Resource private TokenService tokenService;
+
     /** 执行 Token 刷新用例 */
     public SingleResponse<TokenCO> execute(RefreshTokenCmd cmd) {
-        // TODO: 实现 Token 刷新逻辑
-        // 1. 验证 Refresh Token - 从 Redis 验证
-        // 2. 生成新的 Access Token
-        // 3. 更新 Token 信息到 Redis
-        // 注意：Token 信息存储在 Redis 中，不操作数据库
-        return SingleResponse.buildFailure(
-                AuthErrorCode.REFRESH_TOKEN_NOT_IMPLEMENTED.getErrCode(),
-                AuthErrorCode.REFRESH_TOKEN_NOT_IMPLEMENTED.getErrDesc());
+        try {
+            RefreshTokenResult result = tokenService.refreshAccessToken(cmd.getRefreshToken());
+            TokenCO tokenCO = new TokenCO();
+            tokenCO.setAccessToken(result.getAccessToken());
+            tokenCO.setExpiresIn(result.getExpiresIn());
+            // refreshToken 不返回，原 RT 保持有效
+            return SingleResponse.of(tokenCO);
+        } catch (TokenServiceException e) {
+            return SingleResponse.buildFailure(e.getErrorCode(), e.getMessage());
+        }
     }
 }

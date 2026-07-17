@@ -15,6 +15,7 @@ import com.yggdrasil.labs.app.auth.dto.co.CredentialCO;
 import com.yggdrasil.labs.app.auth.dto.co.LoginResultCO;
 import com.yggdrasil.labs.app.auth.dto.co.TokenCO;
 import com.yggdrasil.labs.app.auth.dto.co.UserInitializationCO;
+import com.yggdrasil.labs.app.auth.dto.co.VerifyTokenCO;
 import com.yggdrasil.labs.app.auth.dto.query.GetTokenQuery;
 import com.yggdrasil.labs.app.auth.dto.query.GetUserQuery;
 import com.yggdrasil.labs.app.auth.dto.query.ListCredentialsQuery;
@@ -58,7 +59,7 @@ public interface AuthApplicationService {
      * @param cmd Token 验证命令
      * @return 验证结果（包含用户ID等信息）
      */
-    SingleResponse<AuthUserCO> verifyToken(VerifyTokenCmd cmd);
+    SingleResponse<VerifyTokenCO> verifyToken(VerifyTokenCmd cmd);
 
     /**
      * 创建凭证
