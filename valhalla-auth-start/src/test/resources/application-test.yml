@@ -1,0 +1,33 @@
+spring:
+  application:
+    name: valhalla-auth-test
+  config:
+    import:
+      - optional:classpath:bootstrap-dubbo.yaml
+  data:
+    redis:
+      host: ${REDIS_HOST:localhost}
+      port: ${REDIS_PORT:6379}
+      timeout: 200ms
+  datasource:
+    url: ${MYSQL_URL:jdbc:mysql://localhost:3306/testdb}
+    username: ${MYSQL_USERNAME:root}
+    password: ${MYSQL_PASSWORD:test}
+    driver-class-name: com.mysql.cj.jdbc.Driver
+
+auth:
+  jwt:
+    secret: test-secret-key-that-is-at-least-32-bytes-long-for-hs256-testing
+  token:
+    access-token-ttl: 15m
+    refresh-token-ttl: 7d
+    max-sessions: 5
+  password:
+    lock-threshold: 5
+    lock-duration: 30m
+
+logging:
+  level:
+    com.alibaba.nacos: OFF
+    com.alibaba.cloud.nacos: OFF
+    org.apache.dubbo: OFF

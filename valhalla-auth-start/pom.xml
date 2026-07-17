@@ -58,6 +58,12 @@
             <groupId>io.github.yggdrasil-labs</groupId>
             <artifactId>mimir-boot-starter-nacos</artifactId>
         </dependency>
+        <!-- Redis -->
+        <dependency>
+            <groupId>org.springframework.boot</groupId>
+            <artifactId>spring-boot-starter-data-redis</artifactId>
+        </dependency>
+
         <!-- Actuator 健康检查 -->
         <dependency>
             <groupId>org.springframework.boot</groupId>
@@ -72,6 +78,26 @@
         <dependency>
             <groupId>io.github.yggdrasil-labs</groupId>
             <artifactId>mimir-boot-starter-dubbo</artifactId>
+        </dependency>
+
+        <!-- Testcontainers (集成测试) -->
+        <dependency>
+            <groupId>org.testcontainers</groupId>
+            <artifactId>testcontainers</artifactId>
+            <version>1.20.4</version>
+            <scope>test</scope>
+        </dependency>
+        <dependency>
+            <groupId>org.testcontainers</groupId>
+            <artifactId>junit-jupiter</artifactId>
+            <version>1.20.4</version>
+            <scope>test</scope>
+        </dependency>
+        <dependency>
+            <groupId>org.testcontainers</groupId>
+            <artifactId>mysql</artifactId>
+            <version>1.20.4</version>
+            <scope>test</scope>
         </dependency>
 
     </dependencies>
