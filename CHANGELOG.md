@@ -1,5 +1,85 @@
 # Changelog
 
+## [1.3.0](https://github.com/Yggdrasil-Labs/valhalla-auth/compare/v1.2.2...v1.3.0) (2026-09-05)
+
+
+### ✨ Features
+
+* **adapter:** 扩展 AuthRpcFacade 支持 verifyToken RPC 调用 ([e5a23b7](https://github.com/Yggdrasil-Labs/valhalla-auth/commit/e5a23b78a077d1e9ef3d68bd4eedbb8a904f7185))
+* **auth:** 实现 LoginExecutor 密码验证与账号锁定逻辑 ([a637413](https://github.com/Yggdrasil-Labs/valhalla-auth/commit/a6374134372332310ed05820b19f10b6bebda270))
+* **auth:** 实现 VerifyToken/RefreshToken/Logout Executor 令牌操作 ([35fbdad](https://github.com/Yggdrasil-Labs/valhalla-auth/commit/35fbdad94c5b67e758d438b882fbd6e8aca4baa2))
+* **infra:** 实现 TokenServiceImpl Token 生命周期管理 ([8af9c31](https://github.com/Yggdrasil-Labs/valhalla-auth/commit/8af9c318d5e80f24da452b2e9d8d22b26efc6211))
+* **infra:** 引入 Redis/JWT 依赖、实现 JwtTokenProvider、定义 TokenService 接口 ([29d124e](https://github.com/Yggdrasil-Labs/valhalla-auth/commit/29d124ea4287905fc524770f4b7b8c0892a9aa3f))
+
+
+### 📝 Documentation
+
+* **init:** 初始化文档体系 ([327751c](https://github.com/Yggdrasil-Labs/valhalla-auth/commit/327751c8c019a0b4d07d1e64221cd62c4deeac46))
+* **token-lifecycle:** 完成需求设计文档 ([603d3e0](https://github.com/Yggdrasil-Labs/valhalla-auth/commit/603d3e092b2a7ea5bc7e14b770aa1a551fbab164))
+* **token:** 更新 Token 生命周期方案——RT 轮换与重放检测 ([098bc8d](https://github.com/Yggdrasil-Labs/valhalla-auth/commit/098bc8d65918d6b0ef4ba335d2284b40244f4a83))
+
+
+### ✅ Tests
+
+* **integration:** 新增 Token 生命周期集成测试 ([b45f193](https://github.com/Yggdrasil-Labs/valhalla-auth/commit/b45f193cfd80682dbf6b95c2d89fad55eb478dc5))
+* **integration:** 新增 Token 生命周期集成测试 ([1aeb6b3](https://github.com/Yggdrasil-Labs/valhalla-auth/commit/1aeb6b3cd8ee5aaeb64b8ac14c0091615b3c7347))
+
+
+### 👷 Continuous Integration
+
+* **deps:** bump actions/checkout from 6.0.1 to 7.0.0 ([545bcc6](https://github.com/Yggdrasil-Labs/valhalla-auth/commit/545bcc647cf9058d93a5dfc6222146472d9c1472))
+* **deps:** bump actions/checkout from 6.0.1 to 7.0.0 ([170b846](https://github.com/Yggdrasil-Labs/valhalla-auth/commit/170b8461d8b54aedd69fe7df0af7845ba1a6e12d))
+* **deps:** bump actions/checkout from 7.0.0 to 7.0.1 ([#89](https://github.com/Yggdrasil-Labs/valhalla-auth/issues/89)) ([1ec2b73](https://github.com/Yggdrasil-Labs/valhalla-auth/commit/1ec2b73f22703884fd12bdaf3ee0bbc7caf8c9ec))
+* **deps:** bump actions/github-script from 8.0.0 to 9.0.0 ([ce9fc89](https://github.com/Yggdrasil-Labs/valhalla-auth/commit/ce9fc89d914239b4d5a8750d2905a8804abf6fe6))
+* **deps:** bump docker/build-push-action from 6.18.0 to 6.19.2 ([d734dee](https://github.com/Yggdrasil-Labs/valhalla-auth/commit/d734dee42fda927bbfd5ce6467b8cb2b74a3bede))
+* **deps:** bump docker/build-push-action from 6.19.2 to 7.0.0 ([fcf9d5e](https://github.com/Yggdrasil-Labs/valhalla-auth/commit/fcf9d5eb916e707d81fdaf064561794d7bfa0612))
+* **deps:** bump docker/build-push-action from 7.0.0 to 7.1.0 ([5eaef0b](https://github.com/Yggdrasil-Labs/valhalla-auth/commit/5eaef0bfade857a3aaa32561eaca777ac18c1780))
+* **deps:** bump docker/build-push-action from 7.1.0 to 7.2.0 ([#67](https://github.com/Yggdrasil-Labs/valhalla-auth/issues/67)) ([0e84214](https://github.com/Yggdrasil-Labs/valhalla-auth/commit/0e84214dc44ff927f41afad09e55e308a36836ac))
+* **deps:** bump docker/build-push-action from 7.2.0 to 7.3.0 ([#85](https://github.com/Yggdrasil-Labs/valhalla-auth/issues/85)) ([6204534](https://github.com/Yggdrasil-Labs/valhalla-auth/commit/62045342279312a2addedfeef33232d0306c8fdd))
+* **deps:** bump docker/login-action from 3.4.0 to 3.7.0 ([c90fe0c](https://github.com/Yggdrasil-Labs/valhalla-auth/commit/c90fe0c723fb1e2da5e6036bea18a4868a638721))
+* **deps:** bump docker/login-action from 3.7.0 to 4.1.0 ([bb16807](https://github.com/Yggdrasil-Labs/valhalla-auth/commit/bb1680775f7cf978fca07c1967e319dea91685f4))
+* **deps:** bump docker/login-action from 4.1.0 to 4.2.0 ([#65](https://github.com/Yggdrasil-Labs/valhalla-auth/issues/65)) ([3da753c](https://github.com/Yggdrasil-Labs/valhalla-auth/commit/3da753cf0bd2213522d864182022e9dcd197b280))
+* **deps:** bump docker/login-action from 4.2.0 to 4.6.0 ([#92](https://github.com/Yggdrasil-Labs/valhalla-auth/issues/92)) ([b411645](https://github.com/Yggdrasil-Labs/valhalla-auth/commit/b4116455d1d326cb3afd3f9b42850dc77e2c9520))
+* **deps:** bump docker/metadata-action from 5.7.0 to 6.0.0 ([4852ed3](https://github.com/Yggdrasil-Labs/valhalla-auth/commit/4852ed3824260e9e5feae33d138703e781c330e8))
+* **deps:** bump docker/metadata-action from 6.0.0 to 6.1.0 ([#66](https://github.com/Yggdrasil-Labs/valhalla-auth/issues/66)) ([1abb653](https://github.com/Yggdrasil-Labs/valhalla-auth/commit/1abb653c64025b3130f6184dbb46d9189df4bf44))
+* **deps:** bump docker/metadata-action from 6.1.0 to 6.2.0 ([43f5cc0](https://github.com/Yggdrasil-Labs/valhalla-auth/commit/43f5cc0f7cd968d2de9c30bb4ea5e95365b403d3))
+* **deps:** bump docker/metadata-action from 6.1.0 to 6.2.0 ([a66d589](https://github.com/Yggdrasil-Labs/valhalla-auth/commit/a66d589fc8e79a3697cb6a506b691aefd5c6add8))
+* **deps:** bump docker/setup-buildx-action from 3.10.0 to 4.0.0 ([1559058](https://github.com/Yggdrasil-Labs/valhalla-auth/commit/15590588fa3bfa735c7477f41a8b0425748686ef))
+* **deps:** bump docker/setup-buildx-action from 4.0.0 to 4.1.0 ([#64](https://github.com/Yggdrasil-Labs/valhalla-auth/issues/64)) ([b64ed58](https://github.com/Yggdrasil-Labs/valhalla-auth/commit/b64ed58d6a3d36eab919f11de5a1f6c8c9925275))
+* **deps:** bump docker/setup-buildx-action from 4.1.0 to 4.2.0 ([12cd489](https://github.com/Yggdrasil-Labs/valhalla-auth/commit/12cd489426f2f6b3373c85cbb83aa7494518f7dd))
+* **deps:** bump docker/setup-buildx-action from 4.1.0 to 4.2.0 ([816651f](https://github.com/Yggdrasil-Labs/valhalla-auth/commit/816651f57b528a9384e33838227d73c5e555d363))
+* **deps:** bump docker/setup-qemu-action from 3.6.0 to 4.0.0 ([6968718](https://github.com/Yggdrasil-Labs/valhalla-auth/commit/69687189709623501c4be1422a4ce236c2d2a707))
+* **deps:** bump docker/setup-qemu-action from 4.0.0 to 4.1.0 ([#69](https://github.com/Yggdrasil-Labs/valhalla-auth/issues/69)) ([31970aa](https://github.com/Yggdrasil-Labs/valhalla-auth/commit/31970aac81a69910b48542c556d3550f3906f1ce))
+* **deps:** bump docker/setup-qemu-action from 4.1.0 to 4.2.0 ([7bd3b0d](https://github.com/Yggdrasil-Labs/valhalla-auth/commit/7bd3b0d58f876d2a6312cd92f20be1423e2e8798))
+* **deps:** bump docker/setup-qemu-action from 4.1.0 to 4.2.0 ([d026cff](https://github.com/Yggdrasil-Labs/valhalla-auth/commit/d026cff7abfda594c56ab9d0404fcfe690ec9a36))
+* **deps:** bump googleapis/release-please-action from 4.4.0 to 4.4.1 ([af350d5](https://github.com/Yggdrasil-Labs/valhalla-auth/commit/af350d52199c0bec6436b3be9fe319cc4315a0bf))
+* **deps:** bump googleapis/release-please-action from 4.4.1 to 5.0.0 ([5c39f75](https://github.com/Yggdrasil-Labs/valhalla-auth/commit/5c39f752c9760692e7bc550df2e424fa8e45026b))
+* **deps:** bump softprops/action-gh-release from 2.5.0 to 3.0.0 ([49f9b31](https://github.com/Yggdrasil-Labs/valhalla-auth/commit/49f9b3191c47a70bad8c691d6275f13734bf316d))
+* **deps:** bump softprops/action-gh-release from 3.0.0 to 3.0.1 ([475ef56](https://github.com/Yggdrasil-Labs/valhalla-auth/commit/475ef56168a830c5e29595c29183e74953dae8d9))
+* **deps:** bump softprops/action-gh-release from 3.0.0 to 3.0.1 ([8aad407](https://github.com/Yggdrasil-Labs/valhalla-auth/commit/8aad407321a7cffb7f2412a2224c620168dcfdee))
+* **deps:** bump softprops/action-gh-release from 3.0.1 to 3.0.2 ([#86](https://github.com/Yggdrasil-Labs/valhalla-auth/issues/86)) ([f4d1c5c](https://github.com/Yggdrasil-Labs/valhalla-auth/commit/f4d1c5c5a586797a5e97d45cc5af13d6fc8d5913))
+
+
+### 🔧 Miscellaneous Chores
+
+* bump version to 1.2.3-SNAPSHOT for next development cycle ([2edfcc3](https://github.com/Yggdrasil-Labs/valhalla-auth/commit/2edfcc3085586f218dd4a726a17218a0ac5ebf1d))
+* **deps-dev:** bump com.diffplug.spotless:spotless-maven-plugin ([c24f7b8](https://github.com/Yggdrasil-Labs/valhalla-auth/commit/c24f7b89940a37e5cb19a495548ca67451edc443))
+* **deps-dev:** bump com.diffplug.spotless:spotless-maven-plugin ([#73](https://github.com/Yggdrasil-Labs/valhalla-auth/issues/73)) ([23b287d](https://github.com/Yggdrasil-Labs/valhalla-auth/commit/23b287d54143e38f51523aa27779eca7114f0f52))
+* **deps-dev:** bump com.diffplug.spotless:spotless-maven-plugin ([#91](https://github.com/Yggdrasil-Labs/valhalla-auth/issues/91)) ([a01aa18](https://github.com/Yggdrasil-Labs/valhalla-auth/commit/a01aa18b4d6fe9e5a507d047a42ba01e4b4a6d0a))
+* **deps-dev:** bump org.testcontainers:junit-jupiter ([669705f](https://github.com/Yggdrasil-Labs/valhalla-auth/commit/669705f1b2c00f8e3e426f1dacd994a5d6924906))
+* **deps-dev:** bump org.testcontainers:junit-jupiter from 1.21.1 to 1.21.4 ([4fef5f0](https://github.com/Yggdrasil-Labs/valhalla-auth/commit/4fef5f05e2d65c383496068e92441173f39a6c6f))
+* **deps-dev:** bump org.testcontainers:mysql from 1.21.1 to 1.21.4 ([e44a450](https://github.com/Yggdrasil-Labs/valhalla-auth/commit/e44a450950ca060c2e3205183eeeaa9bc30d50f8))
+* **deps-dev:** bump org.testcontainers:mysql from 1.21.1 to 1.21.4 ([a03b886](https://github.com/Yggdrasil-Labs/valhalla-auth/commit/a03b886f5591e0f08b78a1cdf748297ff8ad776e))
+* **deps:** bump io.github.yggdrasil-labs:mimir-boot-bom ([#71](https://github.com/Yggdrasil-Labs/valhalla-auth/issues/71)) ([70f1389](https://github.com/Yggdrasil-Labs/valhalla-auth/commit/70f1389ae88f6df6f2b63ace3eb582c0b0c9f967))
+* **deps:** bump io.github.yggdrasil-labs:mimir-boot-parent ([#72](https://github.com/Yggdrasil-Labs/valhalla-auth/issues/72)) ([11c2025](https://github.com/Yggdrasil-Labs/valhalla-auth/commit/11c202556930fa03b99964b6431d9e4c628a7a68))
+* **deps:** bump io.jsonwebtoken:jjwt-api from 0.12.6 to 0.13.0 ([4049065](https://github.com/Yggdrasil-Labs/valhalla-auth/commit/4049065b73f0d6a09120337c0b60d25b9b53f692))
+* **deps:** bump io.jsonwebtoken:jjwt-api from 0.12.6 to 0.13.0 ([c1db2b5](https://github.com/Yggdrasil-Labs/valhalla-auth/commit/c1db2b5d2eacd4f4c983271814ed04e5d57db235))
+* **deps:** bump io.jsonwebtoken:jjwt-impl from 0.12.6 to 0.13.0 ([0c03c56](https://github.com/Yggdrasil-Labs/valhalla-auth/commit/0c03c56de74a526f441621496e3423ea9a0f0b23))
+* **deps:** bump io.jsonwebtoken:jjwt-impl from 0.12.6 to 0.13.0 ([f3dc548](https://github.com/Yggdrasil-Labs/valhalla-auth/commit/f3dc5481daa09b742a5365a2e24176f42b850c2c))
+* **deps:** bump io.jsonwebtoken:jjwt-jackson from 0.12.6 to 0.13.0 ([56526f1](https://github.com/Yggdrasil-Labs/valhalla-auth/commit/56526f16620e85a25c744af7b09d007134d74234))
+* **deps:** bump io.jsonwebtoken:jjwt-jackson from 0.12.6 to 0.13.0 ([ebf5dda](https://github.com/Yggdrasil-Labs/valhalla-auth/commit/ebf5dda74b5fb686df8547f117e0d72ec94e31b8))
+* **deps:** bump the mimir-boot group with 2 updates ([0ff0b6e](https://github.com/Yggdrasil-Labs/valhalla-auth/commit/0ff0b6e75ae78f60f0954c7205437956824d19f9))
+
 ## [1.2.2](https://github.com/Yggdrasil-Labs/valhalla-auth/compare/v1.2.1...v1.2.2) (2026-01-31)
 
 
